@@ -92,6 +92,8 @@ const Index = () => {
                 I am not affiliated with, endorsed by, or the owner of any of the logos shown. 
                 These images have been sourced from StickPNG.com and are used solely for educational 
                 and informational purposes. No copyright infringement is intended.
+                <br /><br />
+                For any feedback reach out to mailappu@gmail.com
               </DialogDescription>
             </DialogHeader>
           </DialogContent>
