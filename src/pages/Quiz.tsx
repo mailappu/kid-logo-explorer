@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Mic, MicOff, ChevronRight, Volume2, VolumeX } from "lucide-react";
@@ -29,6 +29,8 @@ const Quiz = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showResult, setShowResult] = useState(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
+  const recognitionRef = useRef<any>(null);
+  const pendingVoiceResultRef = useRef<{ matchedOption: string | null; transcript: string } | null>(null);
 
   useEffect(() => {
     fetchLogoItems();
@@ -175,19 +177,12 @@ const Quiz = () => {
 
       console.log("Matched option:", matchedOption);
       
-      if (matchedOption) {
-        handleAnswerSelect(matchedOption);
-      } else {
-        const errorMessage = `I heard "${transcript}". Sorry, I didn't get it. Can you please repeat again?`;
-        // Delay speech to ensure it works after voice recognition ends
-        setTimeout(() => {
-          speakFeedback(errorMessage);
-        }, 300);
-        toast({
-          title: "Didn't catch that",
-          description: errorMessage,
-          variant: "destructive",
-        });
+      // Defer handling until after recognition fully ends to avoid TTS suppression
+      pendingVoiceResultRef.current = { matchedOption: matchedOption || null, transcript };
+      try {
+        recognition.stop();
+      } catch (e) {
+        console.warn('Recognition stop error:', e);
       }
     };
 
@@ -197,6 +192,24 @@ const Quiz = () => {
 
     recognition.onend = () => {
       setIsListening(false);
+      const pending = pendingVoiceResultRef.current;
+      pendingVoiceResultRef.current = null;
+      if (!pending) return;
+
+      // Speak or evaluate only after recognition fully stops
+      setTimeout(() => {
+        if (pending.matchedOption) {
+          handleAnswerSelect(pending.matchedOption);
+        } else {
+          const errorMessage = `I heard "${pending.transcript}". Sorry, I didn't get it. Can you please repeat again?`;
+          speakFeedback(errorMessage);
+          toast({
+            title: "Didn't catch that",
+            description: errorMessage,
+            variant: "destructive",
+          });
+        }
+      }, 150);
     };
 
     recognition.start();
