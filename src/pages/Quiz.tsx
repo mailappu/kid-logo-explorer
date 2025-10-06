@@ -147,15 +147,39 @@ const Quiz = () => {
     };
 
     recognition.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript.toLowerCase();
+      const transcript = event.results[0][0].transcript.toLowerCase().trim();
+      console.log("Voice input transcript:", transcript);
       
-      // Find matching option
-      const matchedOption = currentQuestion?.options.find(
-        (option) => option.toLowerCase().includes(transcript) || transcript.includes(option.toLowerCase())
-      );
+      // Find matching option with more flexible matching
+      const matchedOption = currentQuestion?.options.find((option) => {
+        const optionLower = option.toLowerCase();
+        const optionWords = optionLower.split(' ');
+        
+        // Check if transcript contains the full option name
+        if (transcript.includes(optionLower)) return true;
+        
+        // Check if option name is contained in transcript
+        if (optionLower.includes(transcript)) return true;
+        
+        // Check if all significant words from option are in transcript
+        const significantWords = optionWords.filter(word => word.length > 3);
+        if (significantWords.length > 0 && significantWords.every(word => transcript.includes(word))) {
+          return true;
+        }
+        
+        return false;
+      });
 
+      console.log("Matched option:", matchedOption);
+      
       if (matchedOption) {
         handleAnswerSelect(matchedOption);
+      } else {
+        toast({
+          title: "Didn't catch that",
+          description: `I heard: "${transcript}". Please try again or tap an option.`,
+          variant: "destructive",
+        });
       }
     };
 
@@ -324,7 +348,7 @@ const Quiz = () => {
             size="lg"
             className="mt-8 h-20 px-12 text-2xl font-bold bg-gradient-success hover:opacity-90 shadow-lg animate-pop"
           >
-            Next Question
+            Next
             <ChevronRight className="w-8 h-8 ml-2" />
           </Button>
         )}
