@@ -26,6 +26,11 @@ import indigoLogo from "@/assets/airline-logos/Indigo.jpeg";
 import qatarAirwaysLogo from "@/assets/airline-logos/Qatar_Airways.jpeg";
 import evaAirLogo from "@/assets/airline-logos/EVA_Air.png";
 import malaysianAirlinesLogo from "@/assets/airline-logos/Malaysian_Airlines.png";
+import spiceJetLogo from "@/assets/airline-logos/SpiceJet.png";
+import turkishAirlinesLogo from "@/assets/airline-logos/Turkish_Airlines.png";
+import vistaraLogo from "@/assets/airline-logos/Vistara.png";
+import srilankanAirlinesLogo from "@/assets/airline-logos/Srilankan_Airlines.png";
+import vietnamAirlinesLogo from "@/assets/airline-logos/Vietnam_Airlines.png";
 
 export const UploadGeneratedLogos = () => {
   const [isUploading, setIsUploading] = useState(false);
@@ -53,6 +58,11 @@ export const UploadGeneratedLogos = () => {
     { name: "Qatar Airways", fileName: "Qatar_Airways.jpeg", imageSrc: qatarAirwaysLogo },
     { name: "EVA Air", fileName: "EVA_Air.png", imageSrc: evaAirLogo },
     { name: "Malaysian Airlines", fileName: "Malaysian_Airlines.png", imageSrc: malaysianAirlinesLogo },
+    { name: "SpiceJet", fileName: "SpiceJet.png", imageSrc: spiceJetLogo },
+    { name: "Turkish Airlines", fileName: "Turkish_Airlines.png", imageSrc: turkishAirlinesLogo },
+    { name: "Vistara", fileName: "Vistara.png", imageSrc: vistaraLogo },
+    { name: "Srilankan Airlines", fileName: "Srilankan_Airlines.png", imageSrc: srilankanAirlinesLogo },
+    { name: "Vietnam Airlines", fileName: "Vietnam_Airlines.png", imageSrc: vietnamAirlinesLogo },
   ];
 
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
