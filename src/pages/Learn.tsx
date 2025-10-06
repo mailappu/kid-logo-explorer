@@ -131,16 +131,13 @@ const Learn = () => {
           <div className="bg-white rounded-3xl p-12 mb-8 shadow-inner flex items-center justify-center min-h-[300px]">
             <img
               src={currentLogo.logo_image_url}
-              alt="Airline logo"
+              alt={`${currentLogo.name} logo`}
               className="max-w-full max-h-64 object-contain"
-              crossOrigin="anonymous"
-              referrerPolicy="no-referrer"
               loading="lazy"
               decoding="async"
-              onError={(e) => {
+              onError={() => {
                 console.error("Image failed to load:", currentLogo.logo_image_url);
                 console.log("Full logo data:", currentLogo);
-                e.currentTarget.src = "/placeholder.svg";
               }}
               onLoad={() => {
                 console.log("Image loaded successfully:", currentLogo.logo_image_url);
@@ -178,6 +175,7 @@ const Learn = () => {
         {/* Navigation Buttons */}
         <div className="mt-8 grid grid-cols-2 gap-4 w-full max-w-xl animate-pop">
           <Button
+            type="button"
             onClick={handlePrevious}
             size="lg"
             className="h-20 text-2xl font-bold bg-gradient-secondary hover:opacity-90 shadow-lg"
@@ -185,6 +183,7 @@ const Learn = () => {
             Previous
           </Button>
           <Button
+            type="button"
             onClick={handleNext}
             size="lg"
             className="h-20 text-2xl font-bold bg-gradient-success hover:opacity-90 shadow-lg"
