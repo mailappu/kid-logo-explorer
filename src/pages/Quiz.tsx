@@ -29,8 +29,36 @@ const Quiz = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showResult, setShowResult] = useState(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
+  const [feedbackText, setFeedbackText] = useState("");
   const recognitionRef = useRef<any>(null);
   const pendingVoiceResultRef = useRef<{ matchedOption: string | null; transcript: string } | null>(null);
+
+  const correctVoiceResponses = [
+    "Bingo, You got it right",
+    "Bingo, You are correct",
+    "You are right",
+    "You are correct",
+    "Well Done",
+    "Awesome",
+    "Perfect"
+  ];
+
+  const correctTextResponses = ["Perfect", "Correct", "Right"];
+
+  const wrongVoiceResponses = [
+    "Hmm Nope",
+    "Nope",
+    "it was wrong",
+    "Learn again",
+    "No No",
+    "Oh No"
+  ];
+
+  const wrongTextResponses = ["Wrong", "Nope", "No No"];
+
+  const getRandomItem = (array: string[]) => {
+    return array[Math.floor(Math.random() * array.length)];
+  };
 
   useEffect(() => {
     fetchLogoItems();
@@ -121,9 +149,15 @@ const Quiz = () => {
 
     if (answer === currentQuestion?.logo.name) {
       setScore((prev) => prev + 1);
-      speakFeedback("Correct!");
+      const textFeedback = getRandomItem(correctTextResponses);
+      const voiceFeedback = getRandomItem(correctVoiceResponses);
+      setFeedbackText(textFeedback);
+      speakFeedback(voiceFeedback);
     } else {
-      speakFeedback(`Wrong! The correct answer is ${currentQuestion?.logo.name}`);
+      const textFeedback = getRandomItem(wrongTextResponses);
+      const voiceFeedback = getRandomItem(wrongVoiceResponses);
+      setFeedbackText(textFeedback);
+      speakFeedback(`${voiceFeedback}. The correct answer is ${currentQuestion?.logo.name}`);
     }
   };
 
@@ -306,7 +340,7 @@ const Quiz = () => {
                   ? "text-success" 
                   : "text-destructive"
               }`}>
-                {selectedAnswer === currentQuestion.logo.name ? "Correct!" : "Wrong!"}
+                {feedbackText}
               </div>
               {selectedAnswer !== currentQuestion.logo.name && (
                 <div className="text-xl md:text-2xl font-semibold text-primary">
