@@ -69,6 +69,9 @@ export const UploadGeneratedLogos = () => {
 
   const logoMap = [
     { name: "Malaysian Airlines", fileName: "Malaysian_Airlines.png", imageSrc: malaysianAirlinesLogo },
+    { name: "Qatar Airways", fileName: "Qatar_Airways.jpeg", imageSrc: qatarAirwaysLogo },
+    { name: "SpiceJet", fileName: "SpiceJet.png", imageSrc: spiceJetLogo },
+    { name: "Delta Airlines", fileName: "Delta_Airlines.png", imageSrc: deltaAirlinesLogo },
   ];
 
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
@@ -124,9 +127,9 @@ export const UploadGeneratedLogos = () => {
 
   return (
     <Card className="p-6 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Re-upload Malaysian Airlines Logo</h2>
+      <h2 className="text-2xl font-bold mb-4">Re-upload Corrupted Logos</h2>
       <p className="mb-6 text-muted-foreground">
-        Re-upload Malaysian Airlines logo to fix the broken image. (This will update the existing entry)
+        Re-upload 4 corrupted logos (Malaysian Airlines, Qatar Airways, SpiceJet, Delta Airlines) - all are only 105 bytes.
       </p>
 
       <Button
