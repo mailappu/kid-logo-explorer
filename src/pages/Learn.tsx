@@ -71,6 +71,10 @@ const Learn = () => {
 
   const handleReveal = () => {
     setIsRevealed(true);
+  };
+
+  const handleRevealWithVoice = () => {
+    setIsRevealed(true);
     if (logoItems[currentIndex]) {
       speakName(logoItems[currentIndex].name);
     }
@@ -144,14 +148,23 @@ const Learn = () => {
 
           {/* Reveal Button or Name Display */}
           {!isRevealed ? (
-            <Button
-              onClick={handleReveal}
-              size="lg"
-              className="w-full h-20 md:h-24 text-lg md:text-2xl lg:text-3xl font-bold bg-gradient-secondary hover:opacity-90 shadow-lg animate-pop px-4"
-            >
-              <Volume2 className="w-6 h-6 md:w-10 md:h-10 mr-2 md:mr-4 flex-shrink-0" />
-              <span>Tap to Reveal & Hear Name</span>
-            </Button>
+            <div className="grid grid-cols-2 gap-4">
+              <Button
+                onClick={handleReveal}
+                size="lg"
+                className="h-20 md:h-24 text-lg md:text-2xl font-bold bg-gradient-primary hover:opacity-90 shadow-lg animate-pop"
+              >
+                Reveal
+              </Button>
+              <Button
+                onClick={handleRevealWithVoice}
+                size="lg"
+                className="h-20 md:h-24 text-lg md:text-2xl font-bold bg-gradient-secondary hover:opacity-90 shadow-lg animate-pop"
+              >
+                <Volume2 className="w-6 h-6 md:w-8 md:h-8 mr-2 flex-shrink-0" />
+                Say it loud
+              </Button>
+            </div>
           ) : (
             <div className="text-center mb-6 animate-scale-up">
               <div className="text-5xl font-bold text-primary mb-4">
