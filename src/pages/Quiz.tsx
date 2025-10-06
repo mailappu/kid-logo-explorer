@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Mic, MicOff, ChevronRight } from "lucide-react";
+import { ArrowLeft, Mic, MicOff, ChevronRight, Volume2, VolumeX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -27,6 +27,7 @@ const Quiz = () => {
   const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showResult, setShowResult] = useState(false);
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
 
   useEffect(() => {
     fetchLogoItems();
@@ -95,6 +96,19 @@ const Quiz = () => {
     setShowResult(false);
   };
 
+  const speakFeedback = (text: string) => {
+    if (!isVoiceEnabled) return;
+    
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.9;
+      utterance.pitch = 1.1;
+      utterance.volume = 1.0;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
   const handleAnswerSelect = (answer: string) => {
     if (selectedAnswer) return; // Already answered
 
@@ -104,6 +118,9 @@ const Quiz = () => {
 
     if (answer === currentQuestion?.logo.name) {
       setScore((prev) => prev + 1);
+      speakFeedback("Correct!");
+    } else {
+      speakFeedback(`Wrong! The correct answer is ${currentQuestion?.logo.name}`);
     }
   };
 
@@ -194,8 +211,22 @@ const Quiz = () => {
           <ArrowLeft className="w-6 h-6 mr-2" />
           <span className="text-xl font-bold">Back</span>
         </Button>
-        <div className="text-3xl font-bold text-primary bg-white px-6 py-3 rounded-full shadow-lg">
-          Score: {score}/{questionsAnswered}
+        <div className="flex items-center gap-4">
+          <Button
+            onClick={() => setIsVoiceEnabled(!isVoiceEnabled)}
+            size="lg"
+            className="bg-white text-primary hover:bg-white/90 shadow-lg"
+            title={isVoiceEnabled ? "Mute voice feedback" : "Enable voice feedback"}
+          >
+            {isVoiceEnabled ? (
+              <Volume2 className="w-6 h-6" />
+            ) : (
+              <VolumeX className="w-6 h-6" />
+            )}
+          </Button>
+          <div className="text-3xl font-bold text-primary bg-white px-6 py-3 rounded-full shadow-lg">
+            Score: {score}/{questionsAnswered}
+          </div>
         </div>
       </div>
 
@@ -205,10 +236,13 @@ const Quiz = () => {
           {/* Logo Display */}
           <div className="bg-white rounded-3xl p-12 mb-8 shadow-inner flex items-center justify-center min-h-[300px]">
             <img
-              src={`https://uriymhduncxwakjempqr.supabase.co/functions/v1/proxy-logo?url=${encodeURIComponent(currentQuestion.logo.logo_image_url)}`}
+              src={currentQuestion.logo.logo_image_url.startsWith('https://uriymhduncxwakjempqr.supabase.co/storage')
+                ? currentQuestion.logo.logo_image_url
+                : `https://uriymhduncxwakjempqr.supabase.co/functions/v1/proxy-logo?url=${encodeURIComponent(currentQuestion.logo.logo_image_url)}`}
               alt={`${currentQuestion.logo.name} logo`}
               className="max-w-full max-h-64 object-contain"
               loading="lazy"
+              referrerPolicy="no-referrer"
               onError={(e) => {
                 console.error("Image failed to load:", currentQuestion.logo.logo_image_url);
                 e.currentTarget.src = "/placeholder.svg";
