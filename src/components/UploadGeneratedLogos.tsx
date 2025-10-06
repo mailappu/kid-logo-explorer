@@ -68,7 +68,7 @@ export const UploadGeneratedLogos = () => {
   const { toast } = useToast();
 
   const logoMap = [
-    { name: "Air Mauritius", fileName: "Air_Mauritius.png", imageSrc: airMauritiusLogo },
+    { name: "Malaysian Airlines", fileName: "Malaysian_Airlines.png", imageSrc: malaysianAirlinesLogo },
   ];
 
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
@@ -124,9 +124,9 @@ export const UploadGeneratedLogos = () => {
 
   return (
     <Card className="p-6 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Upload Missing Logo</h2>
+      <h2 className="text-2xl font-bold mb-4">Re-upload Malaysian Airlines Logo</h2>
       <p className="mb-6 text-muted-foreground">
-        Upload Air Mauritius logo to complete the collection. (54 logos already in database)
+        Re-upload Malaysian Airlines logo to fix the broken image. (This will update the existing entry)
       </p>
 
       <Button
