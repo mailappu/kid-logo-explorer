@@ -176,10 +176,7 @@ const Quiz = () => {
       console.log("Matched option:", matchedOption);
       
       if (matchedOption) {
-        // Small delay to ensure speech synthesis works after voice recognition ends
-        setTimeout(() => {
-          handleAnswerSelect(matchedOption);
-        }, 100);
+        handleAnswerSelect(matchedOption);
       } else {
         const errorMessage = `I heard "${transcript}". Sorry, I didn't get it. Can you please repeat again?`;
         speakFeedback(errorMessage);
@@ -357,7 +354,6 @@ const Quiz = () => {
             className="mt-8 h-20 px-12 text-2xl font-bold bg-gradient-success hover:opacity-90 shadow-lg animate-pop"
           >
             Next
-            <ChevronRight className="w-8 h-8 ml-2" />
           </Button>
         )}
       </div>
