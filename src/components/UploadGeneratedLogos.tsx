@@ -16,6 +16,16 @@ import cathayPacificLogo from "@/assets/airline-logos/Cathay_Pacific.png";
 import austrianAirlinesLogo from "@/assets/airline-logos/Austrian_Airlines.png";
 import airFranceLogo from "@/assets/airline-logos/Air_France.png";
 import brusselsAirlinesLogo from "@/assets/airline-logos/Brussels_Airlines.png";
+import philippineAirlinesLogo from "@/assets/airline-logos/Philippine_Airlines.png";
+import singaporeAirlinesLogo from "@/assets/airline-logos/Singapore_Airlines.jpeg";
+import finnairLogo from "@/assets/airline-logos/Finnair.png";
+import japanAirlinesLogo from "@/assets/airline-logos/Japan_Airlines.png";
+import ethiopianAirlinesLogo from "@/assets/airline-logos/Ethiopian_Airlines.png";
+import latamAirlinesLogo from "@/assets/airline-logos/LATAM_Airlines.png";
+import indigoLogo from "@/assets/airline-logos/Indigo.jpeg";
+import qatarAirwaysLogo from "@/assets/airline-logos/Qatar_Airways.jpeg";
+import evaAirLogo from "@/assets/airline-logos/EVA_Air.png";
+import malaysianAirlinesLogo from "@/assets/airline-logos/Malaysian_Airlines.png";
 
 export const UploadGeneratedLogos = () => {
   const [isUploading, setIsUploading] = useState(false);
@@ -33,6 +43,16 @@ export const UploadGeneratedLogos = () => {
     { name: "Austrian Airlines", fileName: "Austrian_Airlines.png", imageSrc: austrianAirlinesLogo },
     { name: "Air France", fileName: "Air_France.png", imageSrc: airFranceLogo },
     { name: "Brussels Airlines", fileName: "Brussels_Airlines.png", imageSrc: brusselsAirlinesLogo },
+    { name: "Philippine Airlines", fileName: "Philippine_Airlines.png", imageSrc: philippineAirlinesLogo },
+    { name: "Singapore Airlines", fileName: "Singapore_Airlines.jpeg", imageSrc: singaporeAirlinesLogo },
+    { name: "Finnair", fileName: "Finnair.png", imageSrc: finnairLogo },
+    { name: "Japan Airlines", fileName: "Japan_Airlines.png", imageSrc: japanAirlinesLogo },
+    { name: "Ethiopian Airlines", fileName: "Ethiopian_Airlines.png", imageSrc: ethiopianAirlinesLogo },
+    { name: "LATAM Airlines", fileName: "LATAM_Airlines.png", imageSrc: latamAirlinesLogo },
+    { name: "Indigo", fileName: "Indigo.jpeg", imageSrc: indigoLogo },
+    { name: "Qatar Airways", fileName: "Qatar_Airways.jpeg", imageSrc: qatarAirwaysLogo },
+    { name: "EVA Air", fileName: "EVA_Air.png", imageSrc: evaAirLogo },
+    { name: "Malaysian Airlines", fileName: "Malaysian_Airlines.png", imageSrc: malaysianAirlinesLogo },
   ];
 
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
