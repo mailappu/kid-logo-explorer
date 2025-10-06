@@ -129,14 +129,11 @@ const Learn = () => {
         <Card className="w-full p-8 shadow-2xl animate-scale-up">
           <div className="bg-white rounded-3xl p-12 mb-8 shadow-inner flex items-center justify-center min-h-[300px]">
             <img
-              src={currentLogo.logo_image_url.startsWith('https://uriymhduncxwakjempqr.supabase.co/storage')
-                ? currentLogo.logo_image_url
-                : `https://uriymhduncxwakjempqr.supabase.co/functions/v1/proxy-logo?url=${encodeURIComponent(currentLogo.logo_image_url)}`}
+              src={currentLogo.logo_image_url}
               alt={`${currentLogo.name} logo`}
               className="max-w-full max-h-64 object-contain"
               loading="lazy"
               decoding="async"
-              referrerPolicy="no-referrer"
               onError={(e) => {
                 console.error("Image failed to load:", currentLogo.logo_image_url);
                 e.currentTarget.src = "/placeholder.svg";
