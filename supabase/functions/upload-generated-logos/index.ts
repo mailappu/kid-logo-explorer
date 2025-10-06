@@ -50,14 +50,20 @@ Deno.serve(async (req) => {
           .from('airline-logos')
           .getPublicUrl(filePath);
 
-        // Update database
+        // Upsert to database (insert or update)
         const { error: dbError } = await supabase
           .from('logo_items')
-          .update({ logo_image_url: publicUrl })
-          .eq('name', logo.name);
+          .upsert({ 
+            name: logo.name,
+            logo_image_url: publicUrl,
+            category: 'airline',
+            is_active: true
+          }, {
+            onConflict: 'name'
+          });
 
         if (dbError) {
-          throw new Error(`Database update failed: ${dbError.message}`);
+          throw new Error(`Database upsert failed: ${dbError.message}`);
         }
 
         console.log(`Successfully processed: ${logo.name}`);
