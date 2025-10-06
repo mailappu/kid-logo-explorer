@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.migrate-logos]
 verify_jwt = false
+
+[functions.upload-generated-logos]
+verify_jwt = false

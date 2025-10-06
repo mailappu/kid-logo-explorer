@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { MigrateLogos } from "@/components/MigrateLogos";
+import { UploadGeneratedLogos } from "@/components/UploadGeneratedLogos";
 
 const MigrateLogosPage = () => {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ const MigrateLogosPage = () => {
       </div>
 
       <div className="flex-1 flex items-center justify-center">
-        <MigrateLogos />
+        <UploadGeneratedLogos />
       </div>
     </div>
   );
