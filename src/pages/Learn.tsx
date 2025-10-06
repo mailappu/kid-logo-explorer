@@ -186,7 +186,6 @@ const Learn = () => {
             className="h-20 text-2xl font-bold bg-gradient-success hover:opacity-90 shadow-lg"
           >
             Next
-            <ChevronRight className="w-8 h-8 ml-2" />
           </Button>
         </div>
       </div>
