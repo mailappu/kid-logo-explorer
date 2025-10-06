@@ -74,6 +74,8 @@ export const UploadGeneratedLogos = () => {
     { name: "Delta Airlines", fileName: "Delta_Airlines.png", imageSrc: deltaAirlinesLogo },
     { name: "Vietnam Airlines", fileName: "Vietnam_Airlines.png", imageSrc: vietnamAirlinesLogo },
     { name: "Indigo", fileName: "Indigo.jpeg", imageSrc: indigoLogo },
+    { name: "Air France", fileName: "Air_France.png", imageSrc: airFranceLogo },
+    { name: "Finnair", fileName: "Finnair.png", imageSrc: finnairLogo },
     { name: "LATAM Airlines", fileName: "LATAM_Airlines.png", imageSrc: latamAirlinesLogo },
     { name: "Akasa", fileName: "Akasa.png", imageSrc: akasaLogo },
     { name: "Austrian Airlines", fileName: "Austrian_Airlines.png", imageSrc: austrianAirlinesLogo },
@@ -148,7 +150,7 @@ export const UploadGeneratedLogos = () => {
     <Card className="p-6 max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Re-upload Corrupted Logos</h2>
       <p className="mb-6 text-muted-foreground">
-        Re-upload 23 corrupted logos (all are only 105 bytes). This will fix all broken images in both Learn and Quiz modes.
+        Re-upload 25 corrupted logos (all are only 105 bytes). This will fix all broken images in both Learn and Quiz modes.
       </p>
 
       <Button
