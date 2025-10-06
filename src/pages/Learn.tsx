@@ -147,9 +147,9 @@ const Learn = () => {
             <Button
               onClick={handleReveal}
               size="lg"
-              className="w-full h-20 md:h-24 text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-secondary hover:opacity-90 shadow-lg animate-pop"
+              className="w-full h-20 md:h-24 text-lg md:text-2xl lg:text-3xl font-bold bg-gradient-secondary hover:opacity-90 shadow-lg animate-pop px-4"
             >
-              <Volume2 className="w-8 h-8 md:w-10 md:h-10 mr-2 md:mr-4 flex-shrink-0" />
+              <Volume2 className="w-6 h-6 md:w-10 md:h-10 mr-2 md:mr-4 flex-shrink-0" />
               <span>Tap to Reveal & Hear Name</span>
             </Button>
           ) : (
