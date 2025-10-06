@@ -97,7 +97,6 @@ export const UploadGeneratedLogos = () => {
     { name: "Aero Mexico", fileName: "Aero_Mexico.png", imageSrc: aeroMexicoLogo },
     { name: "Tunisair", fileName: "Tunisair.png", imageSrc: tunisairLogo },
     { name: "Nepal Airlines", fileName: "Nepal_Airlines.png", imageSrc: nepalAirlinesLogo },
-    { name: "Air Mauritius", fileName: "Air_Mauritius.png", imageSrc: airMauritiusLogo },
   ];
 
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
@@ -155,7 +154,7 @@ export const UploadGeneratedLogos = () => {
     <Card className="p-6 max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Upload New Airline Logos</h2>
       <p className="mb-6 text-muted-foreground">
-        This will upload 20 new airline logos to storage and update the database. (25 logos already in database)
+        This will upload 30 new airline logos to storage and update the database. (25 logos already in database)
       </p>
 
       <Button
