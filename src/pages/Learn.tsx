@@ -80,6 +80,11 @@ const Learn = () => {
     setCurrentIndex((prev) => (prev + 1) % logoItems.length);
   };
 
+  const handlePrevious = () => {
+    setIsRevealed(false);
+    setCurrentIndex((prev) => (prev - 1 + logoItems.length) % logoItems.length);
+  };
+
   const currentLogo = logoItems[currentIndex];
 
   if (isLoading) {
@@ -128,12 +133,17 @@ const Learn = () => {
               src={currentLogo.logo_image_url}
               alt="Airline logo"
               className="max-w-full max-h-64 object-contain"
+              crossOrigin="anonymous"
+              referrerPolicy="no-referrer"
+              loading="lazy"
+              decoding="async"
               onError={(e) => {
-                console.error('Image failed to load:', currentLogo.logo_image_url);
-                console.log('Full logo data:', currentLogo);
+                console.error("Image failed to load:", currentLogo.logo_image_url);
+                console.log("Full logo data:", currentLogo);
+                e.currentTarget.src = "/placeholder.svg";
               }}
               onLoad={() => {
-                console.log('Image loaded successfully:', currentLogo.logo_image_url);
+                console.log("Image loaded successfully:", currentLogo.logo_image_url);
               }}
             />
           </div>
@@ -165,15 +175,24 @@ const Learn = () => {
           )}
         </Card>
 
-        {/* Next Button - Always visible */}
-        <Button
-          onClick={handleNext}
-          size="lg"
-          className="mt-8 h-20 px-12 text-2xl font-bold bg-gradient-success hover:opacity-90 shadow-lg animate-pop"
-        >
-          Next Logo
-          <ChevronRight className="w-8 h-8 ml-2" />
-        </Button>
+        {/* Navigation Buttons */}
+        <div className="mt-8 grid grid-cols-2 gap-4 w-full max-w-xl animate-pop">
+          <Button
+            onClick={handlePrevious}
+            size="lg"
+            className="h-20 text-2xl font-bold bg-gradient-secondary hover:opacity-90 shadow-lg"
+          >
+            Previous
+          </Button>
+          <Button
+            onClick={handleNext}
+            size="lg"
+            className="h-20 text-2xl font-bold bg-gradient-success hover:opacity-90 shadow-lg"
+          >
+            Next
+            <ChevronRight className="w-8 h-8 ml-2" />
+          </Button>
+        </div>
       </div>
     </div>
   );

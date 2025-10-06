@@ -208,12 +208,17 @@ const Quiz = () => {
               src={currentQuestion.logo.logo_image_url}
               alt="Airline logo"
               className="max-w-full max-h-64 object-contain"
+              crossOrigin="anonymous"
+              referrerPolicy="no-referrer"
+              loading="lazy"
+              decoding="async"
               onError={(e) => {
-                console.error('Image failed to load:', currentQuestion.logo.logo_image_url);
-                console.log('Full logo data:', currentQuestion.logo);
+                console.error("Image failed to load:", currentQuestion.logo.logo_image_url);
+                console.log("Full logo data:", currentQuestion.logo);
+                e.currentTarget.src = "/placeholder.svg";
               }}
               onLoad={() => {
-                console.log('Image loaded successfully:', currentQuestion.logo.logo_image_url);
+                console.log("Image loaded successfully:", currentQuestion.logo.logo_image_url);
               }}
             />
           </div>
