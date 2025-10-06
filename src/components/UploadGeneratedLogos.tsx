@@ -97,6 +97,7 @@ export const UploadGeneratedLogos = () => {
     { name: "Aero Mexico", fileName: "Aero_Mexico.png", imageSrc: aeroMexicoLogo },
     { name: "Tunisair", fileName: "Tunisair.png", imageSrc: tunisairLogo },
     { name: "Nepal Airlines", fileName: "Nepal_Airlines.png", imageSrc: nepalAirlinesLogo },
+    { name: "Air Mauritius", fileName: "Air_Mauritius.png", imageSrc: airMauritiusLogo },
   ];
 
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
