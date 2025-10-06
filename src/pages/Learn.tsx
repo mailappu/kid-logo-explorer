@@ -127,16 +127,25 @@ const Learn = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center max-w-2xl mx-auto w-full">
         <Card className="w-full p-8 shadow-2xl animate-scale-up">
-          {/* Logo Display */}
           <div className="bg-white rounded-3xl p-12 mb-8 shadow-inner flex items-center justify-center min-h-[300px]">
             <img
-              src={`https://uriymhduncxwakjempqr.supabase.co/functions/v1/proxy-logo?url=${encodeURIComponent(currentLogo.logo_image_url)}`}
+              src={currentLogo.logo_image_url}
               alt={`${currentLogo.name} logo`}
               className="max-w-full max-h-64 object-contain"
               loading="lazy"
+              decoding="async"
+              data-proxied="false"
               onError={(e) => {
+                const target = e.currentTarget as HTMLImageElement;
+                const isProxied = target.dataset.proxied === 'true';
+                const isStorage = currentLogo.logo_image_url.startsWith('https://uriymhduncxwakjempqr.supabase.co/storage');
+                if (!isProxied && !isStorage) {
+                  target.dataset.proxied = 'true';
+                  target.src = `https://uriymhduncxwakjempqr.supabase.co/functions/v1/proxy-logo?url=${encodeURIComponent(currentLogo.logo_image_url)}`;
+                  return;
+                }
                 console.error("Image failed to load:", currentLogo.logo_image_url);
-                e.currentTarget.src = "/placeholder.svg";
+                target.src = "/placeholder.svg";
               }}
             />
           </div>
