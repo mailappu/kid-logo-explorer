@@ -1,13 +1,23 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { GraduationCap, Trophy } from "lucide-react";
+import { GraduationCap, Trophy, Info } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [disclaimerOpen, setDisclaimerOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-background p-6 flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-gradient-background p-6 flex flex-col items-center justify-center relative">
       {/* Title */}
       <div className="text-center mb-12 animate-scale-up">
         <h1 className="text-6xl font-bold text-primary mb-4 drop-shadow-lg">
@@ -63,6 +73,29 @@ const Index = () => {
             </Button>
           </div>
         </Card>
+      </div>
+
+      {/* Disclaimer Link */}
+      <div className="mt-12">
+        <Dialog open={disclaimerOpen} onOpenChange={setDisclaimerOpen}>
+          <DialogTrigger asChild>
+            <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
+              <Info className="w-4 h-4 mr-2" />
+              Disclaimer
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold">Disclaimer</DialogTitle>
+              <DialogDescription className="text-base leading-relaxed pt-4">
+                All logos and images displayed on this app are the property of their respective owners. 
+                I am not affiliated with, endorsed by, or the owner of any of the logos shown. 
+                These images have been sourced from StickPNG.com and are used solely for educational 
+                and informational purposes. No copyright infringement is intended.
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
