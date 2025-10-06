@@ -11,6 +11,7 @@ interface LogoItem {
   name: string;
   logo_image_url: string;
   category: string;
+  updated_at: string;
 }
 
 const Quiz = () => {
@@ -236,12 +237,12 @@ const Quiz = () => {
           {/* Logo Display */}
           <div className="bg-white rounded-3xl p-12 mb-8 shadow-inner flex items-center justify-center min-h-[300px]">
             <img
-              src={currentQuestion.logo.logo_image_url}
+              src={`${currentQuestion.logo.logo_image_url}?v=${encodeURIComponent(currentQuestion.logo.updated_at)}`}
               alt={`${currentQuestion.logo.name} logo`}
               className="max-w-full max-h-64 object-contain"
               loading="lazy"
               onError={(e) => {
-                console.error("Image failed to load:", currentQuestion.logo.logo_image_url);
+                console.error("Image failed to load:", `${currentQuestion.logo.logo_image_url}?v=${encodeURIComponent(currentQuestion.logo.updated_at)}`);
                 e.currentTarget.src = "/placeholder.svg";
               }}
             />
