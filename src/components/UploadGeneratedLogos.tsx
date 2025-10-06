@@ -51,6 +51,16 @@ import pakistanInternationalAirlinesLogo from "@/assets/airline-logos/Pakistan_I
 import airNewzealandLogo from "@/assets/airline-logos/Air_Newzealand.png";
 import airSerbiaLogo from "@/assets/airline-logos/AirSerbia.png";
 import tibetAirlinesLogo from "@/assets/airline-logos/Tibet_Airlines.png";
+import airCanadaLogo from "@/assets/airline-logos/Air_Canada.png";
+import israirLogo from "@/assets/airline-logos/Israir.png";
+import azerbaijanAirlinesLogo from "@/assets/airline-logos/Azerbaijan_Airlines.png";
+import laoAirlinesLogo from "@/assets/airline-logos/Lao_Airlines.png";
+import sichuanAirlinesLogo from "@/assets/airline-logos/Sichuan_Airlines.png";
+import airlinkAirlinesLogo from "@/assets/airline-logos/Airlink_Airlines.png";
+import aeroMexicoLogo from "@/assets/airline-logos/Aero_Mexico.png";
+import tunisairLogo from "@/assets/airline-logos/Tunisair.png";
+import nepalAirlinesLogo from "@/assets/airline-logos/Nepal_Airlines.png";
+import airMauritiusLogo from "@/assets/airline-logos/Air_Mauritius.png";
 
 export const UploadGeneratedLogos = () => {
   const [isUploading, setIsUploading] = useState(false);
@@ -58,31 +68,6 @@ export const UploadGeneratedLogos = () => {
   const { toast } = useToast();
 
   const logoMap = [
-    { name: "China Airlines", fileName: "China_Airlines.png", imageSrc: chinaAirlinesLogo },
-    { name: "Emirates", fileName: "Emirates.png", imageSrc: emiratesLogo },
-    { name: "Akasa", fileName: "Akasa.png", imageSrc: akasaLogo },
-    { name: "Caribbean Airlines", fileName: "Caribbean_Airlines.png", imageSrc: caribbeanAirlinesLogo },
-    { name: "Delta Airlines", fileName: "Delta_Airlines.png", imageSrc: deltaAirlinesLogo },
-    { name: "Condor", fileName: "Condor.png", imageSrc: condorLogo },
-    { name: "Cathay Pacific", fileName: "Cathay_Pacific.png", imageSrc: cathayPacificLogo },
-    { name: "Austrian Airlines", fileName: "Austrian_Airlines.png", imageSrc: austrianAirlinesLogo },
-    { name: "Air France", fileName: "Air_France.png", imageSrc: airFranceLogo },
-    { name: "Brussels Airlines", fileName: "Brussels_Airlines.png", imageSrc: brusselsAirlinesLogo },
-    { name: "Philippine Airlines", fileName: "Philippine_Airlines.png", imageSrc: philippineAirlinesLogo },
-    { name: "Singapore Airlines", fileName: "Singapore_Airlines.jpeg", imageSrc: singaporeAirlinesLogo },
-    { name: "Finnair", fileName: "Finnair.png", imageSrc: finnairLogo },
-    { name: "Japan Airlines", fileName: "Japan_Airlines.png", imageSrc: japanAirlinesLogo },
-    { name: "Ethiopian Airlines", fileName: "Ethiopian_Airlines.png", imageSrc: ethiopianAirlinesLogo },
-    { name: "LATAM Airlines", fileName: "LATAM_Airlines.png", imageSrc: latamAirlinesLogo },
-    { name: "Indigo", fileName: "Indigo.jpeg", imageSrc: indigoLogo },
-    { name: "Qatar Airways", fileName: "Qatar_Airways.jpeg", imageSrc: qatarAirwaysLogo },
-    { name: "EVA Air", fileName: "EVA_Air.png", imageSrc: evaAirLogo },
-    { name: "Malaysian Airlines", fileName: "Malaysian_Airlines.png", imageSrc: malaysianAirlinesLogo },
-    { name: "SpiceJet", fileName: "SpiceJet.png", imageSrc: spiceJetLogo },
-    { name: "Turkish Airlines", fileName: "Turkish_Airlines.png", imageSrc: turkishAirlinesLogo },
-    { name: "Vistara", fileName: "Vistara.png", imageSrc: vistaraLogo },
-    { name: "Srilankan Airlines", fileName: "Srilankan_Airlines.png", imageSrc: srilankanAirlinesLogo },
-    { name: "Vietnam Airlines", fileName: "Vietnam_Airlines.png", imageSrc: vietnamAirlinesLogo },
     { name: "Turkmenistan Airlines", fileName: "Turkmenistan_Airlines.png", imageSrc: turkmenistanAirlinesLogo },
     { name: "Qantas", fileName: "Qantas.png", imageSrc: qantasLogo },
     { name: "Hong Kong Airlines", fileName: "Hong_Kong_Airlines.png", imageSrc: hongKongAirlinesLogo },
@@ -103,6 +88,16 @@ export const UploadGeneratedLogos = () => {
     { name: "Air New Zealand", fileName: "Air_Newzealand.png", imageSrc: airNewzealandLogo },
     { name: "Air Serbia", fileName: "AirSerbia.png", imageSrc: airSerbiaLogo },
     { name: "Tibet Airlines", fileName: "Tibet_Airlines.png", imageSrc: tibetAirlinesLogo },
+    { name: "Air Canada", fileName: "Air_Canada.png", imageSrc: airCanadaLogo },
+    { name: "Israir", fileName: "Israir.png", imageSrc: israirLogo },
+    { name: "Azerbaijan Airlines", fileName: "Azerbaijan_Airlines.png", imageSrc: azerbaijanAirlinesLogo },
+    { name: "Lao Airlines", fileName: "Lao_Airlines.png", imageSrc: laoAirlinesLogo },
+    { name: "Sichuan Airlines", fileName: "Sichuan_Airlines.png", imageSrc: sichuanAirlinesLogo },
+    { name: "Airlink Airlines", fileName: "Airlink_Airlines.png", imageSrc: airlinkAirlinesLogo },
+    { name: "Aero Mexico", fileName: "Aero_Mexico.png", imageSrc: aeroMexicoLogo },
+    { name: "Tunisair", fileName: "Tunisair.png", imageSrc: tunisairLogo },
+    { name: "Nepal Airlines", fileName: "Nepal_Airlines.png", imageSrc: nepalAirlinesLogo },
+    { name: "Air Mauritius", fileName: "Air_Mauritius.png", imageSrc: airMauritiusLogo },
   ];
 
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
@@ -158,9 +153,9 @@ export const UploadGeneratedLogos = () => {
 
   return (
     <Card className="p-6 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Upload Airline Logos</h2>
+      <h2 className="text-2xl font-bold mb-4">Upload New Airline Logos</h2>
       <p className="mb-6 text-muted-foreground">
-        This will upload the airline logos to storage and update the database with the selected airlines.
+        This will upload 20 new airline logos to storage and update the database. (25 logos already in database)
       </p>
 
       <Button
