@@ -205,20 +205,13 @@ const Quiz = () => {
           {/* Logo Display */}
           <div className="bg-white rounded-3xl p-12 mb-8 shadow-inner flex items-center justify-center min-h-[300px]">
             <img
-              src={currentQuestion.logo.logo_image_url}
-              alt="Airline logo"
+              src={`https://uriymhduncxwakjempqr.supabase.co/functions/v1/proxy-logo?url=${encodeURIComponent(currentQuestion.logo.logo_image_url)}`}
+              alt={`${currentQuestion.logo.name} logo`}
               className="max-w-full max-h-64 object-contain"
-              crossOrigin="anonymous"
-              referrerPolicy="no-referrer"
               loading="lazy"
-              decoding="async"
               onError={(e) => {
                 console.error("Image failed to load:", currentQuestion.logo.logo_image_url);
-                console.log("Full logo data:", currentQuestion.logo);
                 e.currentTarget.src = "/placeholder.svg";
-              }}
-              onLoad={() => {
-                console.log("Image loaded successfully:", currentQuestion.logo.logo_image_url);
               }}
             />
           </div>
