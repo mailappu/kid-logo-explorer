@@ -179,7 +179,10 @@ const Quiz = () => {
         handleAnswerSelect(matchedOption);
       } else {
         const errorMessage = `I heard "${transcript}". Sorry, I didn't get it. Can you please repeat again?`;
-        speakFeedback(errorMessage);
+        // Delay speech to ensure it works after voice recognition ends
+        setTimeout(() => {
+          speakFeedback(errorMessage);
+        }, 300);
         toast({
           title: "Didn't catch that",
           description: errorMessage,
