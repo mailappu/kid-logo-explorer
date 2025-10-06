@@ -128,6 +128,13 @@ const Learn = () => {
               src={currentLogo.logo_image_url}
               alt="Airline logo"
               className="max-w-full max-h-64 object-contain"
+              onError={(e) => {
+                console.error('Image failed to load:', currentLogo.logo_image_url);
+                console.log('Full logo data:', currentLogo);
+              }}
+              onLoad={() => {
+                console.log('Image loaded successfully:', currentLogo.logo_image_url);
+              }}
             />
           </div>
 

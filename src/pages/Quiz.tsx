@@ -208,15 +208,40 @@ const Quiz = () => {
               src={currentQuestion.logo.logo_image_url}
               alt="Airline logo"
               className="max-w-full max-h-64 object-contain"
+              onError={(e) => {
+                console.error('Image failed to load:', currentQuestion.logo.logo_image_url);
+                console.log('Full logo data:', currentQuestion.logo);
+              }}
+              onLoad={() => {
+                console.log('Image loaded successfully:', currentQuestion.logo.logo_image_url);
+              }}
             />
           </div>
 
           {/* Question Text */}
-          <div className="text-3xl font-bold text-center mb-8 text-primary">
+          <div className="text-3xl font-bold text-center mb-6 text-primary">
             Which airline is this?
           </div>
 
-          {/* Voice Input Button - Moved to top */}
+          {/* Result Display - Moved here below question */}
+          {showResult && (
+            <div className="text-center mb-8 animate-scale-up">
+              <div className={`text-4xl font-bold mb-3 ${
+                selectedAnswer === currentQuestion.logo.name 
+                  ? "text-success" 
+                  : "text-destructive"
+              }`}>
+                {selectedAnswer === currentQuestion.logo.name ? "Correct!" : "Wrong!"}
+              </div>
+              {selectedAnswer !== currentQuestion.logo.name && (
+                <div className="text-2xl font-semibold text-primary">
+                  Correct answer: {currentQuestion.logo.name}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Voice Input Button */}
           <Button
             onClick={startVoiceRecognition}
             disabled={!!selectedAnswer || isListening}
@@ -241,7 +266,7 @@ const Quiz = () => {
           </Button>
 
           {/* Answer Options */}
-          <div className="space-y-4 mb-6">
+          <div className="space-y-4">
             {currentQuestion.options.map((option, index) => (
               <Button
                 key={index}
@@ -260,24 +285,6 @@ const Quiz = () => {
               </Button>
             ))}
           </div>
-
-          {/* Result Display */}
-          {showResult && (
-            <div className="text-center mb-6 animate-scale-up">
-              <div className={`text-4xl font-bold mb-3 ${
-                selectedAnswer === currentQuestion.logo.name 
-                  ? "text-success" 
-                  : "text-destructive"
-              }`}>
-                {selectedAnswer === currentQuestion.logo.name ? "Correct!" : "Wrong!"}
-              </div>
-              {selectedAnswer !== currentQuestion.logo.name && (
-                <div className="text-2xl font-semibold text-primary">
-                  Correct answer: {currentQuestion.logo.name}
-                </div>
-              )}
-            </div>
-          )}
         </Card>
 
         {/* Next Button - Shows after answering */}
