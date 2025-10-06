@@ -5,17 +5,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
-// Import generated logos
-import emiratesLogo from "@/assets/temp-logos/emirates.png";
-import qatarLogo from "@/assets/temp-logos/qatar.png";
-import singaporeLogo from "@/assets/temp-logos/singapore.png";
-import lufthansaLogo from "@/assets/temp-logos/lufthansa.png";
-import britishAirwaysLogo from "@/assets/temp-logos/british-airways.png";
-import airFranceLogo from "@/assets/temp-logos/air-france.png";
-import deltaLogo from "@/assets/temp-logos/delta.png";
-import unitedLogo from "@/assets/temp-logos/united.png";
-import americanLogo from "@/assets/temp-logos/american.png";
-import jalLogo from "@/assets/temp-logos/jal.png";
+// Import airline logos
+import chinaAirlinesLogo from "@/assets/airline-logos/China_Airlines.png";
+import emiratesLogo from "@/assets/airline-logos/Emirates.png";
+import akasaLogo from "@/assets/airline-logos/Akasa.png";
+import caribbeanAirlinesLogo from "@/assets/airline-logos/Caribbean_Airlines.png";
+import deltaAirlinesLogo from "@/assets/airline-logos/Delta_Airlines.png";
+import condorLogo from "@/assets/airline-logos/Condor.png";
+import cathayPacificLogo from "@/assets/airline-logos/Cathay_Pacific.png";
+import austrianAirlinesLogo from "@/assets/airline-logos/Austrian_Airlines.png";
+import airFranceLogo from "@/assets/airline-logos/Air_France.png";
+import brusselsAirlinesLogo from "@/assets/airline-logos/Brussels_Airlines.png";
 
 export const UploadGeneratedLogos = () => {
   const [isUploading, setIsUploading] = useState(false);
@@ -23,16 +23,16 @@ export const UploadGeneratedLogos = () => {
   const { toast } = useToast();
 
   const logoMap = [
-    { name: "Emirates", fileName: "emirates.png", imageSrc: emiratesLogo },
-    { name: "Qatar Airways", fileName: "qatar.png", imageSrc: qatarLogo },
-    { name: "Singapore Airlines", fileName: "singapore.png", imageSrc: singaporeLogo },
-    { name: "Lufthansa", fileName: "lufthansa.png", imageSrc: lufthansaLogo },
-    { name: "British Airways", fileName: "british-airways.png", imageSrc: britishAirwaysLogo },
-    { name: "Air France", fileName: "air-france.png", imageSrc: airFranceLogo },
-    { name: "Delta Air Lines", fileName: "delta.png", imageSrc: deltaLogo },
-    { name: "United Airlines", fileName: "united.png", imageSrc: unitedLogo },
-    { name: "American Airlines", fileName: "american.png", imageSrc: americanLogo },
-    { name: "Japan Airlines", fileName: "jal.png", imageSrc: jalLogo },
+    { name: "China Airlines", fileName: "China_Airlines.png", imageSrc: chinaAirlinesLogo },
+    { name: "Emirates", fileName: "Emirates.png", imageSrc: emiratesLogo },
+    { name: "Akasa", fileName: "Akasa.png", imageSrc: akasaLogo },
+    { name: "Caribbean Airlines", fileName: "Caribbean_Airlines.png", imageSrc: caribbeanAirlinesLogo },
+    { name: "Delta Airlines", fileName: "Delta_Airlines.png", imageSrc: deltaAirlinesLogo },
+    { name: "Condor", fileName: "Condor.png", imageSrc: condorLogo },
+    { name: "Cathay Pacific", fileName: "Cathay_Pacific.png", imageSrc: cathayPacificLogo },
+    { name: "Austrian Airlines", fileName: "Austrian_Airlines.png", imageSrc: austrianAirlinesLogo },
+    { name: "Air France", fileName: "Air_France.png", imageSrc: airFranceLogo },
+    { name: "Brussels Airlines", fileName: "Brussels_Airlines.png", imageSrc: brusselsAirlinesLogo },
   ];
 
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
@@ -88,10 +88,9 @@ export const UploadGeneratedLogos = () => {
 
   return (
     <Card className="p-6 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Upload Generated Logos</h2>
+      <h2 className="text-2xl font-bold mb-4">Upload Airline Logos</h2>
       <p className="mb-6 text-muted-foreground">
-        This will upload the AI-generated airline logos to storage and update the database.
-        You can replace these with real logos later.
+        This will upload the airline logos to storage and update the database with the selected airlines.
       </p>
 
       <Button
@@ -106,7 +105,7 @@ export const UploadGeneratedLogos = () => {
             Uploading Logos...
           </>
         ) : (
-          "Upload Generated Logos"
+          "Upload Airline Logos"
         )}
       </Button>
 
