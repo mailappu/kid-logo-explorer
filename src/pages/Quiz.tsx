@@ -175,9 +175,11 @@ const Quiz = () => {
       if (matchedOption) {
         handleAnswerSelect(matchedOption);
       } else {
+        const errorMessage = "Sorry, I didn't get it. Can you please repeat again?";
+        speakFeedback(errorMessage);
         toast({
           title: "Didn't catch that",
-          description: `I heard: "${transcript}". Please try again or tap an option.`,
+          description: `I heard: "${transcript}". ${errorMessage}`,
           variant: "destructive",
         });
       }
