@@ -2,3 +2,6 @@ project_id = "uriymhduncxwakjempqr"
 
 [functions.proxy-logo]
 verify_jwt = false
+
+[functions.migrate-logos]
+verify_jwt = false
