@@ -72,6 +72,25 @@ export const UploadGeneratedLogos = () => {
     { name: "Qatar Airways", fileName: "Qatar_Airways.jpeg", imageSrc: qatarAirwaysLogo },
     { name: "SpiceJet", fileName: "SpiceJet.png", imageSrc: spiceJetLogo },
     { name: "Delta Airlines", fileName: "Delta_Airlines.png", imageSrc: deltaAirlinesLogo },
+    { name: "Vietnam Airlines", fileName: "Vietnam_Airlines.png", imageSrc: vietnamAirlinesLogo },
+    { name: "Indigo", fileName: "Indigo.jpeg", imageSrc: indigoLogo },
+    { name: "LATAM Airlines", fileName: "LATAM_Airlines.png", imageSrc: latamAirlinesLogo },
+    { name: "Akasa", fileName: "Akasa.png", imageSrc: akasaLogo },
+    { name: "Austrian Airlines", fileName: "Austrian_Airlines.png", imageSrc: austrianAirlinesLogo },
+    { name: "Brussels Airlines", fileName: "Brussels_Airlines.png", imageSrc: brusselsAirlinesLogo },
+    { name: "Caribbean Airlines", fileName: "Caribbean_Airlines.png", imageSrc: caribbeanAirlinesLogo },
+    { name: "Cathay Pacific", fileName: "Cathay_Pacific.png", imageSrc: cathayPacificLogo },
+    { name: "China Airlines", fileName: "China_Airlines.png", imageSrc: chinaAirlinesLogo },
+    { name: "Condor", fileName: "Condor.png", imageSrc: condorLogo },
+    { name: "Emirates", fileName: "Emirates.png", imageSrc: emiratesLogo },
+    { name: "Ethiopian Airlines", fileName: "Ethiopian_Airlines.png", imageSrc: ethiopianAirlinesLogo },
+    { name: "EVA Air", fileName: "EVA_Air.png", imageSrc: evaAirLogo },
+    { name: "Japan Airlines", fileName: "Japan_Airlines.png", imageSrc: japanAirlinesLogo },
+    { name: "Philippine Airlines", fileName: "Philippine_Airlines.png", imageSrc: philippineAirlinesLogo },
+    { name: "Singapore Airlines", fileName: "Singapore_Airlines.jpeg", imageSrc: singaporeAirlinesLogo },
+    { name: "Srilankan Airlines", fileName: "Srilankan_Airlines.png", imageSrc: srilankanAirlinesLogo },
+    { name: "Turkish Airlines", fileName: "Turkish_Airlines.png", imageSrc: turkishAirlinesLogo },
+    { name: "Vistara", fileName: "Vistara.png", imageSrc: vistaraLogo },
   ];
 
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
@@ -129,7 +148,7 @@ export const UploadGeneratedLogos = () => {
     <Card className="p-6 max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Re-upload Corrupted Logos</h2>
       <p className="mb-6 text-muted-foreground">
-        Re-upload 4 corrupted logos (Malaysian Airlines, Qatar Airways, SpiceJet, Delta Airlines) - all are only 105 bytes.
+        Re-upload 23 corrupted logos (all are only 105 bytes). This will fix all broken images in both Learn and Quiz modes.
       </p>
 
       <Button
