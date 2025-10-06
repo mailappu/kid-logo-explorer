@@ -230,31 +230,31 @@ const Quiz = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-background p-6 flex flex-col">
+    <div className="min-h-screen bg-gradient-background p-4 md:p-6 flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6 md:mb-8 gap-2">
         <Button
           onClick={() => navigate("/")}
           size="lg"
-          className="bg-white text-primary hover:bg-white/90 shadow-lg"
+          className="bg-white text-primary hover:bg-white/90 shadow-lg h-12 md:h-auto px-3 md:px-4"
         >
-          <ArrowLeft className="w-6 h-6 mr-2" />
-          <span className="text-xl font-bold">Back</span>
+          <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 mr-1 md:mr-2" />
+          <span className="text-lg md:text-xl font-bold">Back</span>
         </Button>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
           <Button
             onClick={() => setIsVoiceEnabled(!isVoiceEnabled)}
             size="lg"
-            className="bg-white text-primary hover:bg-white/90 shadow-lg"
+            className="bg-white text-primary hover:bg-white/90 shadow-lg h-12 md:h-auto px-3 md:px-4"
             title={isVoiceEnabled ? "Mute voice feedback" : "Enable voice feedback"}
           >
             {isVoiceEnabled ? (
-              <Volume2 className="w-6 h-6" />
+              <Volume2 className="w-5 h-5 md:w-6 md:h-6" />
             ) : (
-              <VolumeX className="w-6 h-6" />
+              <VolumeX className="w-5 h-5 md:w-6 md:h-6" />
             )}
           </Button>
-          <div className="text-3xl font-bold text-primary bg-white px-6 py-3 rounded-full shadow-lg">
+          <div className="text-xl md:text-3xl font-bold text-primary bg-white px-4 md:px-6 py-2 md:py-3 rounded-full shadow-lg whitespace-nowrap">
             Score: {score}/{questionsAnswered}
           </div>
         </div>
@@ -262,13 +262,13 @@ const Quiz = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center max-w-2xl mx-auto w-full">
-        <Card className="w-full p-8 shadow-2xl animate-scale-up">
+        <Card className="w-full p-4 md:p-8 shadow-2xl animate-scale-up">
           {/* Logo Display */}
-          <div className="bg-white rounded-3xl p-12 mb-8 shadow-inner flex items-center justify-center min-h-[300px]">
+          <div className="bg-white rounded-3xl p-6 md:p-12 mb-6 md:mb-8 shadow-inner flex items-center justify-center min-h-[200px] md:min-h-[300px]">
             <img
               src={`${currentQuestion.logo.logo_image_url}?v=${encodeURIComponent(currentQuestion.logo.updated_at)}`}
               alt={`${currentQuestion.logo.name} logo`}
-              className="max-w-full max-h-64 object-contain"
+              className="max-w-full max-h-48 md:max-h-64 object-contain"
               loading="lazy"
               onError={(e) => {
                 console.error("Image failed to load:", `${currentQuestion.logo.logo_image_url}?v=${encodeURIComponent(currentQuestion.logo.updated_at)}`);
@@ -278,14 +278,14 @@ const Quiz = () => {
           </div>
 
           {/* Question Text */}
-          <div className="text-3xl font-bold text-center mb-6 text-primary">
+          <div className="text-2xl md:text-3xl font-bold text-center mb-4 md:mb-6 text-primary">
             Which airline is this?
           </div>
 
           {/* Result Display - Moved here below question */}
           {showResult && (
-            <div className="text-center mb-8 animate-scale-up">
-              <div className={`text-4xl font-bold mb-3 ${
+            <div className="text-center mb-6 md:mb-8 animate-scale-up">
+              <div className={`text-3xl md:text-4xl font-bold mb-2 md:mb-3 ${
                 selectedAnswer === currentQuestion.logo.name 
                   ? "text-success" 
                   : "text-destructive"
@@ -293,7 +293,7 @@ const Quiz = () => {
                 {selectedAnswer === currentQuestion.logo.name ? "Correct!" : "Wrong!"}
               </div>
               {selectedAnswer !== currentQuestion.logo.name && (
-                <div className="text-2xl font-semibold text-primary">
+                <div className="text-xl md:text-2xl font-semibold text-primary">
                   Correct answer: {currentQuestion.logo.name}
                 </div>
               )}
@@ -305,7 +305,7 @@ const Quiz = () => {
             onClick={startVoiceRecognition}
             disabled={!!selectedAnswer || isListening}
             size="lg"
-            className={`w-full h-16 text-xl font-bold mb-6 ${
+            className={`w-full h-14 md:h-16 text-lg md:text-xl font-bold mb-4 md:mb-6 ${
               isListening
                 ? "bg-destructive animate-pulse"
                 : "bg-gradient-secondary hover:opacity-90"
@@ -313,26 +313,26 @@ const Quiz = () => {
           >
             {isListening ? (
               <>
-                <MicOff className="w-6 h-6 mr-2" />
+                <MicOff className="w-5 h-5 md:w-6 md:h-6 mr-2" />
                 Listening...
               </>
             ) : (
               <>
-                <Mic className="w-6 h-6 mr-2" />
+                <Mic className="w-5 h-5 md:w-6 md:h-6 mr-2" />
                 Say Your Answer
               </>
             )}
           </Button>
 
           {/* Answer Options */}
-          <div className="space-y-4">
+          <div className="space-y-3 md:space-y-4">
             {currentQuestion.options.map((option, index) => (
               <Button
                 key={index}
                 onClick={() => handleAnswerSelect(option)}
                 disabled={!!selectedAnswer}
                 size="lg"
-                className={`w-full h-20 text-2xl font-bold shadow-lg ${
+                className={`w-full h-16 md:h-20 text-lg md:text-2xl font-bold shadow-lg ${
                   getButtonVariant(option) === "success"
                     ? "bg-gradient-success hover:opacity-90"
                     : getButtonVariant(option) === "destructive"
@@ -351,7 +351,7 @@ const Quiz = () => {
           <Button
             onClick={generateQuestion}
             size="lg"
-            className="mt-8 h-20 px-12 text-2xl font-bold bg-gradient-success hover:opacity-90 shadow-lg animate-pop"
+            className="mt-6 md:mt-8 h-16 md:h-20 px-10 md:px-12 text-xl md:text-2xl font-bold bg-gradient-success hover:opacity-90 shadow-lg animate-pop"
           >
             Next
           </Button>
