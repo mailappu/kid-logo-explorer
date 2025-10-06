@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Mic, MicOff } from "lucide-react";
+import { ArrowLeft, Mic, MicOff, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -26,6 +26,7 @@ const Quiz = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showResult, setShowResult] = useState(false);
 
   useEffect(() => {
     fetchLogoItems();
@@ -91,6 +92,7 @@ const Quiz = () => {
       options: allOptions,
     });
     setSelectedAnswer(null);
+    setShowResult(false);
   };
 
   const handleAnswerSelect = (answer: string) => {
@@ -98,25 +100,11 @@ const Quiz = () => {
 
     setSelectedAnswer(answer);
     setQuestionsAnswered((prev) => prev + 1);
+    setShowResult(true);
 
     if (answer === currentQuestion?.logo.name) {
       setScore((prev) => prev + 1);
-      toast({
-        title: "Correct! 🎉",
-        description: `That's ${currentQuestion.logo.name}!`,
-      });
-    } else {
-      toast({
-        title: "Not quite! 😊",
-        description: `That was ${currentQuestion?.logo.name}`,
-        variant: "destructive",
-      });
     }
-
-    // Auto-advance to next question after 2 seconds
-    setTimeout(() => {
-      generateQuestion();
-    }, 2000);
   };
 
   const startVoiceRecognition = () => {
@@ -150,22 +138,11 @@ const Quiz = () => {
 
       if (matchedOption) {
         handleAnswerSelect(matchedOption);
-      } else {
-        toast({
-          title: "Didn't catch that",
-          description: "Try speaking more clearly!",
-          variant: "destructive",
-        });
       }
     };
 
     recognition.onerror = () => {
       setIsListening(false);
-      toast({
-        title: "Error",
-        description: "Could not recognize speech. Please try again.",
-        variant: "destructive",
-      });
     };
 
     recognition.onend = () => {
@@ -239,6 +216,30 @@ const Quiz = () => {
             Which airline is this?
           </div>
 
+          {/* Voice Input Button - Moved to top */}
+          <Button
+            onClick={startVoiceRecognition}
+            disabled={!!selectedAnswer || isListening}
+            size="lg"
+            className={`w-full h-16 text-xl font-bold mb-6 ${
+              isListening
+                ? "bg-destructive animate-pulse"
+                : "bg-gradient-secondary hover:opacity-90"
+            }`}
+          >
+            {isListening ? (
+              <>
+                <MicOff className="w-6 h-6 mr-2" />
+                Listening...
+              </>
+            ) : (
+              <>
+                <Mic className="w-6 h-6 mr-2" />
+                Say Your Answer
+              </>
+            )}
+          </Button>
+
           {/* Answer Options */}
           <div className="space-y-4 mb-6">
             {currentQuestion.options.map((option, index) => (
@@ -260,30 +261,36 @@ const Quiz = () => {
             ))}
           </div>
 
-          {/* Voice Input Button */}
-          <Button
-            onClick={startVoiceRecognition}
-            disabled={!!selectedAnswer || isListening}
-            size="lg"
-            className={`w-full h-16 text-xl font-bold ${
-              isListening
-                ? "bg-destructive animate-pulse"
-                : "bg-gradient-secondary hover:opacity-90"
-            }`}
-          >
-            {isListening ? (
-              <>
-                <MicOff className="w-6 h-6 mr-2" />
-                Listening...
-              </>
-            ) : (
-              <>
-                <Mic className="w-6 h-6 mr-2" />
-                Speak Your Answer
-              </>
-            )}
-          </Button>
+          {/* Result Display */}
+          {showResult && (
+            <div className="text-center mb-6 animate-scale-up">
+              <div className={`text-4xl font-bold mb-3 ${
+                selectedAnswer === currentQuestion.logo.name 
+                  ? "text-success" 
+                  : "text-destructive"
+              }`}>
+                {selectedAnswer === currentQuestion.logo.name ? "Correct!" : "Wrong!"}
+              </div>
+              {selectedAnswer !== currentQuestion.logo.name && (
+                <div className="text-2xl font-semibold text-primary">
+                  Correct answer: {currentQuestion.logo.name}
+                </div>
+              )}
+            </div>
+          )}
         </Card>
+
+        {/* Next Button - Shows after answering */}
+        {showResult && (
+          <Button
+            onClick={generateQuestion}
+            size="lg"
+            className="mt-8 h-20 px-12 text-2xl font-bold bg-gradient-success hover:opacity-90 shadow-lg animate-pop"
+          >
+            Next Question
+            <ChevronRight className="w-8 h-8 ml-2" />
+          </Button>
+        )}
       </div>
     </div>
   );

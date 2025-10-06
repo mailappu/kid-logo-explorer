@@ -108,7 +108,7 @@ const Learn = () => {
   return (
     <div className="min-h-screen bg-gradient-background p-6 flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-start mb-8">
         <Button
           onClick={() => navigate("/")}
           size="lg"
@@ -117,9 +117,6 @@ const Learn = () => {
           <ArrowLeft className="w-6 h-6 mr-2" />
           <span className="text-xl font-bold">Back</span>
         </Button>
-        <div className="text-2xl font-bold text-primary">
-          {currentIndex + 1} / {logoItems.length}
-        </div>
       </div>
 
       {/* Main Content */}
@@ -161,17 +158,15 @@ const Learn = () => {
           )}
         </Card>
 
-        {/* Next Button */}
-        {isRevealed && (
-          <Button
-            onClick={handleNext}
-            size="lg"
-            className="mt-8 h-20 px-12 text-2xl font-bold bg-gradient-success hover:opacity-90 shadow-lg animate-pop"
-          >
-            Next Logo
-            <ChevronRight className="w-8 h-8 ml-2" />
-          </Button>
-        )}
+        {/* Next Button - Always visible */}
+        <Button
+          onClick={handleNext}
+          size="lg"
+          className="mt-8 h-20 px-12 text-2xl font-bold bg-gradient-success hover:opacity-90 shadow-lg animate-pop"
+        >
+          Next Logo
+          <ChevronRight className="w-8 h-8 ml-2" />
+        </Button>
       </div>
     </div>
   );
