@@ -176,7 +176,10 @@ const Quiz = () => {
       console.log("Matched option:", matchedOption);
       
       if (matchedOption) {
-        handleAnswerSelect(matchedOption);
+        // Small delay to ensure speech synthesis works after voice recognition ends
+        setTimeout(() => {
+          handleAnswerSelect(matchedOption);
+        }, 100);
       } else {
         const errorMessage = `I heard "${transcript}". Sorry, I didn't get it. Can you please repeat again?`;
         speakFeedback(errorMessage);
