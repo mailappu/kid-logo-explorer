@@ -150,10 +150,11 @@ const Quiz = () => {
       const transcript = event.results[0][0].transcript.toLowerCase().trim();
       console.log("Voice input transcript:", transcript);
       
-      // Find matching option with more flexible matching
+      // Find matching option with more lenient matching
       const matchedOption = currentQuestion?.options.find((option) => {
         const optionLower = option.toLowerCase();
-        const optionWords = optionLower.split(' ');
+        const optionWords = optionLower.split(' ').filter(word => word.length > 2);
+        const transcriptWords = transcript.split(' ').filter(word => word.length > 2);
         
         // Check if transcript contains the full option name
         if (transcript.includes(optionLower)) return true;
@@ -161,11 +162,13 @@ const Quiz = () => {
         // Check if option name is contained in transcript
         if (optionLower.includes(transcript)) return true;
         
-        // Check if all significant words from option are in transcript
-        const significantWords = optionWords.filter(word => word.length > 3);
-        if (significantWords.length > 0 && significantWords.every(word => transcript.includes(word))) {
-          return true;
-        }
+        // Check if any significant word from option is in transcript
+        const hasMatchingWord = optionWords.some(word => transcript.includes(word));
+        if (hasMatchingWord) return true;
+        
+        // Check if any significant word from transcript is in option
+        const hasReverseMatch = transcriptWords.some(word => optionLower.includes(word));
+        if (hasReverseMatch) return true;
         
         return false;
       });
@@ -175,11 +178,11 @@ const Quiz = () => {
       if (matchedOption) {
         handleAnswerSelect(matchedOption);
       } else {
-        const errorMessage = "Sorry, I didn't get it. Can you please repeat again?";
+        const errorMessage = `I heard "${transcript}". Sorry, I didn't get it. Can you please repeat again?`;
         speakFeedback(errorMessage);
         toast({
           title: "Didn't catch that",
-          description: `I heard: "${transcript}". ${errorMessage}`,
+          description: errorMessage,
           variant: "destructive",
         });
       }
