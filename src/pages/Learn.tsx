@@ -116,9 +116,9 @@ const Learn = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-background p-6 flex flex-col">
+    <div className="h-screen bg-gradient-background p-6 flex flex-col justify-between overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-start mb-8">
+      <div className="flex items-center justify-start flex-shrink-0">
         <Button
           onClick={() => navigate("/")}
           size="lg"
@@ -130,7 +130,7 @@ const Learn = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center max-w-2xl mx-auto w-full">
+      <div className="flex flex-col items-center justify-center max-w-2xl mx-auto w-full flex-1 overflow-y-auto">
         <Card className="w-full p-8 shadow-2xl animate-scale-up">
           <div className="bg-white rounded-3xl p-12 mb-8 shadow-inner flex items-center justify-center min-h-[300px]">
             <img
