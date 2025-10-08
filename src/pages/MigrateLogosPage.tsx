@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { UploadGeneratedLogos } from "@/components/UploadGeneratedLogos";
+import { LogoHealthCheck } from "@/components/LogoHealthCheck";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const MigrateLogosPage = () => {
   const navigate = useNavigate();
@@ -20,7 +22,18 @@ const MigrateLogosPage = () => {
       </div>
 
       <div className="flex-1 flex items-center justify-center">
-        <UploadGeneratedLogos />
+        <Tabs defaultValue="health" className="w-full max-w-4xl">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="health">Health Check</TabsTrigger>
+            <TabsTrigger value="upload">Upload Logos</TabsTrigger>
+          </TabsList>
+          <TabsContent value="health">
+            <LogoHealthCheck />
+          </TabsContent>
+          <TabsContent value="upload">
+            <UploadGeneratedLogos />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
