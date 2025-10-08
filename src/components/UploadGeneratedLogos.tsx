@@ -61,6 +61,16 @@ import aeroMexicoLogo from "@/assets/airline-logos/Aero_Mexico.png";
 import tunisairLogo from "@/assets/airline-logos/Tunisair.png";
 import nepalAirlinesLogo from "@/assets/airline-logos/Nepal_Airlines.png";
 import airMauritiusLogo from "@/assets/airline-logos/Air_Mauritius.png";
+import koreanAirLogo from "@/assets/airline-logos/Korean_Air.png";
+import icelandairLogo from "@/assets/airline-logos/Icelandair.png";
+import hawaiianAirlinesLogo from "@/assets/airline-logos/Hawaiian_Airlines.png";
+import southAfricanAirwaysLogo from "@/assets/airline-logos/South_African_Airways.png";
+import klmRoyalDutchAirlinesLogo from "@/assets/airline-logos/KLM_Royal_Dutch_Airlines.png";
+import airZimbabweLogo from "@/assets/airline-logos/Air_Zimbabwe.png";
+import iberiaLogo from "@/assets/airline-logos/Iberia.png";
+import hainanAirlinesLogo from "@/assets/airline-logos/Hainan_Airlines.png";
+import cebuPacificLogo from "@/assets/airline-logos/Cebu_Pacific.png";
+import saudiaAirlinesLogo from "@/assets/airline-logos/Saudia_Airlines.png";
 
 export const UploadGeneratedLogos = () => {
   const [isUploading, setIsUploading] = useState(false);
@@ -93,6 +103,16 @@ export const UploadGeneratedLogos = () => {
     { name: "Srilankan Airlines", fileName: "Srilankan_Airlines.png", imageSrc: srilankanAirlinesLogo },
     { name: "Turkish Airlines", fileName: "Turkish_Airlines.png", imageSrc: turkishAirlinesLogo },
     { name: "Vistara", fileName: "Vistara.png", imageSrc: vistaraLogo },
+    { name: "Korean Air", fileName: "Korean_Air.png", imageSrc: koreanAirLogo },
+    { name: "Icelandair", fileName: "Icelandair.png", imageSrc: icelandairLogo },
+    { name: "Hawaiian Airlines", fileName: "Hawaiian_Airlines.png", imageSrc: hawaiianAirlinesLogo },
+    { name: "South African Airways", fileName: "South_African_Airways.png", imageSrc: southAfricanAirwaysLogo },
+    { name: "KLM Royal Dutch Airlines", fileName: "KLM_Royal_Dutch_Airlines.png", imageSrc: klmRoyalDutchAirlinesLogo },
+    { name: "Air Zimbabwe", fileName: "Air_Zimbabwe.png", imageSrc: airZimbabweLogo },
+    { name: "Iberia", fileName: "Iberia.png", imageSrc: iberiaLogo },
+    { name: "Hainan Airlines", fileName: "Hainan_Airlines.png", imageSrc: hainanAirlinesLogo },
+    { name: "Cebu Pacific", fileName: "Cebu_Pacific.png", imageSrc: cebuPacificLogo },
+    { name: "Saudia Airlines", fileName: "Saudia_Airlines.png", imageSrc: saudiaAirlinesLogo },
   ];
 
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
@@ -150,7 +170,7 @@ export const UploadGeneratedLogos = () => {
     <Card className="p-6 max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Re-upload Corrupted Logos</h2>
       <p className="mb-6 text-muted-foreground">
-        Re-upload 25 corrupted logos (all are only 105 bytes). This will fix all broken images in both Learn and Quiz modes.
+        Upload airline logos to the database. Currently ready to upload {logoMap.length} logos.
       </p>
 
       <Button
