@@ -30,8 +30,10 @@ const Quiz = () => {
   const [showResult, setShowResult] = useState(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
   const [feedbackText, setFeedbackText] = useState("");
+  const [recentlyUsedLogos, setRecentlyUsedLogos] = useState<string[]>([]);
   const recognitionRef = useRef<any>(null);
   const pendingVoiceResultRef = useRef<{ matchedOption: string | null; transcript: string } | null>(null);
+  const voiceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const correctVoiceResponses = [
     "Bingo, You got it right",
@@ -104,8 +106,23 @@ const Quiz = () => {
   const generateQuestion = () => {
     if (logoItems.length < 4) return;
 
+    // Filter out recently used logos to improve variety
+    const availableLogos = logoItems.filter(
+      (item) => !recentlyUsedLogos.includes(item.id)
+    );
+
+    // If we've used too many, reset but keep the last 3
+    const logosToChooseFrom = availableLogos.length >= 4 
+      ? availableLogos 
+      : logoItems.filter((item) => !recentlyUsedLogos.slice(-3).includes(item.id));
+
     // Pick random logo as correct answer
-    const correctLogo = logoItems[Math.floor(Math.random() * logoItems.length)];
+    const correctLogo = logosToChooseFrom[
+      Math.floor(Math.random() * logosToChooseFrom.length)
+    ];
+
+    // Track this logo as recently used (keep last 5)
+    setRecentlyUsedLogos((prev) => [...prev.slice(-4), correctLogo.id]);
 
     // Pick 3 other random logos as incorrect options
     const incorrectOptions = logoItems
@@ -161,6 +178,22 @@ const Quiz = () => {
     }
   };
 
+  const stopVoiceRecognition = () => {
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (e) {
+        console.warn('Error stopping recognition:', e);
+      }
+      recognitionRef.current = null;
+    }
+    if (voiceTimeoutRef.current) {
+      clearTimeout(voiceTimeoutRef.current);
+      voiceTimeoutRef.current = null;
+    }
+    setIsListening(false);
+  };
+
   const startVoiceRecognition = () => {
     if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
       toast({
@@ -171,18 +204,40 @@ const Quiz = () => {
       return;
     }
 
+    // Clean up any existing recognition
+    stopVoiceRecognition();
+
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
 
     recognition.lang = "en-US";
     recognition.continuous = false;
     recognition.interimResults = false;
 
+    // Set a timeout to prevent getting stuck
+    voiceTimeoutRef.current = setTimeout(() => {
+      console.log('Voice recognition timeout - stopping');
+      stopVoiceRecognition();
+      toast({
+        title: "Timeout",
+        description: "Voice recognition timed out. Please try again.",
+        variant: "destructive",
+      });
+    }, 8000); // 8 second timeout
+
     recognition.onstart = () => {
+      console.log('Voice recognition started');
       setIsListening(true);
     };
 
     recognition.onresult = (event: any) => {
+      console.log('Voice recognition got result');
+      if (voiceTimeoutRef.current) {
+        clearTimeout(voiceTimeoutRef.current);
+        voiceTimeoutRef.current = null;
+      }
+
       const transcript = event.results[0][0].transcript.toLowerCase().trim();
       console.log("Voice input transcript:", transcript);
       
@@ -220,12 +275,33 @@ const Quiz = () => {
       }
     };
 
-    recognition.onerror = () => {
+    recognition.onerror = (event: any) => {
+      console.error('Voice recognition error:', event.error);
+      if (voiceTimeoutRef.current) {
+        clearTimeout(voiceTimeoutRef.current);
+        voiceTimeoutRef.current = null;
+      }
       setIsListening(false);
+      recognitionRef.current = null;
+      
+      if (event.error !== 'aborted' && event.error !== 'no-speech') {
+        toast({
+          title: "Voice error",
+          description: `Voice recognition error: ${event.error}. Please try again.`,
+          variant: "destructive",
+        });
+      }
     };
 
     recognition.onend = () => {
+      console.log('Voice recognition ended');
+      if (voiceTimeoutRef.current) {
+        clearTimeout(voiceTimeoutRef.current);
+        voiceTimeoutRef.current = null;
+      }
       setIsListening(false);
+      recognitionRef.current = null;
+
       const pending = pendingVoiceResultRef.current;
       pendingVoiceResultRef.current = null;
       if (!pending) return;
@@ -246,7 +322,17 @@ const Quiz = () => {
       }, 150);
     };
 
-    recognition.start();
+    try {
+      recognition.start();
+    } catch (e) {
+      console.error('Error starting recognition:', e);
+      stopVoiceRecognition();
+      toast({
+        title: "Error",
+        description: "Could not start voice recognition. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const getButtonVariant = (option: string) => {
