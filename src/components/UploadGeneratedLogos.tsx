@@ -91,6 +91,16 @@ import croatiaAirlinesLogo from "@/assets/airline-logos/Croatia_Airlines.png";
 import iranAirLogo from "@/assets/airline-logos/Iran_Air.png";
 import batikAirLogo from "@/assets/airline-logos/Batik_Air.png";
 import omanAirLogo from "@/assets/airline-logos/Oman_Air.png";
+import ryanairLogo from "@/assets/airline-logos/Ryanair.png";
+import silverAirwaysLogo from "@/assets/airline-logos/Silver_Airways.png";
+import jetstarLogo from "@/assets/airline-logos/Jetstar.png";
+import iraqiAirwaysLogo from "@/assets/airline-logos/Iraqi_Airways.png";
+import aerolineasArgentinasLogo from "@/assets/airline-logos/Aerolineas_Argentinas.png";
+import gulfAirLogo from "@/assets/airline-logos/Gulf_Air.png";
+import bangkokAirwaysLogo from "@/assets/airline-logos/Bangkok_Airways.png";
+import ravnAlaskaLogo from "@/assets/airline-logos/Ravn_Alaska.png";
+import airSeychellesLogo from "@/assets/airline-logos/Air_Seychelles.png";
+import uzbekistanAirwaysLogo from "@/assets/airline-logos/Uzbekistan_Airways.png";
 
 export const UploadGeneratedLogos = () => {
   const [isUploading, setIsUploading] = useState(false);
@@ -153,6 +163,16 @@ export const UploadGeneratedLogos = () => {
     { name: "Iran Air", fileName: "Iran_Air.png", imageSrc: iranAirLogo },
     { name: "Batik Air", fileName: "Batik_Air.png", imageSrc: batikAirLogo },
     { name: "Oman Air", fileName: "Oman_Air.png", imageSrc: omanAirLogo },
+    { name: "Ryanair", fileName: "Ryanair.png", imageSrc: ryanairLogo },
+    { name: "Silver Airways", fileName: "Silver_Airways.png", imageSrc: silverAirwaysLogo },
+    { name: "Jetstar", fileName: "Jetstar.png", imageSrc: jetstarLogo },
+    { name: "Iraqi Airways", fileName: "Iraqi_Airways.png", imageSrc: iraqiAirwaysLogo },
+    { name: "Aerolineas Argentinas", fileName: "Aerolineas_Argentinas.png", imageSrc: aerolineasArgentinasLogo },
+    { name: "Gulf Air", fileName: "Gulf_Air.png", imageSrc: gulfAirLogo },
+    { name: "Bangkok Airways", fileName: "Bangkok_Airways.png", imageSrc: bangkokAirwaysLogo },
+    { name: "Ravn Alaska", fileName: "Ravn_Alaska.png", imageSrc: ravnAlaskaLogo },
+    { name: "Air Seychelles", fileName: "Air_Seychelles.png", imageSrc: airSeychellesLogo },
+    { name: "Uzbekistan Airways", fileName: "Uzbekistan_Airways.png", imageSrc: uzbekistanAirwaysLogo },
   ];
 
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
