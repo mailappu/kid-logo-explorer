@@ -101,6 +101,12 @@ import bangkokAirwaysLogo from "@/assets/airline-logos/Bangkok_Airways.png";
 import ravnAlaskaLogo from "@/assets/airline-logos/Ravn_Alaska.png";
 import airSeychellesLogo from "@/assets/airline-logos/Air_Seychelles.png";
 import uzbekistanAirwaysLogo from "@/assets/airline-logos/Uzbekistan_Airways.png";
+import kuwaitAirwaysLogo from "@/assets/airline-logos/Kuwait_Airways.png";
+import sunExpressLogo from "@/assets/airline-logos/SunExpress.png";
+import cyprusAirwaysLogo from "@/assets/airline-logos/Cyprus_Airways.png";
+import atlanticAirwaysLogo from "@/assets/airline-logos/Atlantic_Airways.png";
+import airChinaLogo from "@/assets/airline-logos/Air_China.png";
+import garudaIndonesiaLogo from "@/assets/airline-logos/Garuda_Indonesia.png";
 
 export const UploadGeneratedLogos = () => {
   const [isUploading, setIsUploading] = useState(false);
@@ -173,7 +179,21 @@ export const UploadGeneratedLogos = () => {
     { name: "Ravn Alaska", fileName: "Ravn_Alaska.png", imageSrc: ravnAlaskaLogo },
     { name: "Air Seychelles", fileName: "Air_Seychelles.png", imageSrc: airSeychellesLogo },
     { name: "Uzbekistan Airways", fileName: "Uzbekistan_Airways.png", imageSrc: uzbekistanAirwaysLogo },
+    { name: "Kuwait Airways", fileName: "Kuwait_Airways.png", imageSrc: kuwaitAirwaysLogo },
+    { name: "SunExpress", fileName: "SunExpress.png", imageSrc: sunExpressLogo },
+    { name: "Cyprus Airways", fileName: "Cyprus_Airways.png", imageSrc: cyprusAirwaysLogo },
+    { name: "Atlantic Airways", fileName: "Atlantic_Airways.png", imageSrc: atlanticAirwaysLogo },
+    { name: "Air China", fileName: "Air_China.png", imageSrc: airChinaLogo },
+    { name: "Garuda Indonesia", fileName: "Garuda_Indonesia.png", imageSrc: garudaIndonesiaLogo },
   ];
+
+  // Validate: Check for duplicates and count
+  const logoNames = logoMap.map(logo => logo.name);
+  const duplicates = logoNames.filter((name, index) => logoNames.indexOf(name) !== index);
+  
+  console.log(`Total logos: ${logoMap.length}`);
+  console.log(`Duplicates found: ${duplicates.length > 0 ? duplicates.join(', ') : 'None'}`);
+
 
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
     const response = await fetch(url);
