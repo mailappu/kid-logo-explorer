@@ -71,6 +71,16 @@ import iberiaLogo from "@/assets/airline-logos/Iberia.png";
 import hainanAirlinesLogo from "@/assets/airline-logos/Hainan_Airlines.png";
 import cebuPacificLogo from "@/assets/airline-logos/Cebu_Pacific.png";
 import saudiaAirlinesLogo from "@/assets/airline-logos/Saudia_Airlines.png";
+import georgianAirwaysLogo from "@/assets/airline-logos/Georgian_Airways.png";
+import rwandAirLogo from "@/assets/airline-logos/RwandAir.png";
+import airPanamaLogo from "@/assets/airline-logos/AirPanama.png";
+import swissAirLogo from "@/assets/airline-logos/SWISS_AIR.png";
+import airTahitiLogo from "@/assets/airline-logos/Air_Tahiti.png";
+import kenyaAirwaysLogo from "@/assets/airline-logos/Kenya_Airways.png";
+import egyptairLogo from "@/assets/airline-logos/Egyptair.png";
+import copaAirlinesLogo from "@/assets/airline-logos/Copa_Airlines.png";
+import royalJordanianAirlinesLogo from "@/assets/airline-logos/Royal_Jordanian_Airlines.png";
+import interCaribbeanLogo from "@/assets/airline-logos/InterCaribbean.png";
 
 export const UploadGeneratedLogos = () => {
   const [isUploading, setIsUploading] = useState(false);
@@ -113,6 +123,16 @@ export const UploadGeneratedLogos = () => {
     { name: "Hainan Airlines", fileName: "Hainan_Airlines.png", imageSrc: hainanAirlinesLogo },
     { name: "Cebu Pacific", fileName: "Cebu_Pacific.png", imageSrc: cebuPacificLogo },
     { name: "Saudia Airlines", fileName: "Saudia_Airlines.png", imageSrc: saudiaAirlinesLogo },
+    { name: "Georgian Airways", fileName: "Georgian_Airways.png", imageSrc: georgianAirwaysLogo },
+    { name: "RwandAir", fileName: "RwandAir.png", imageSrc: rwandAirLogo },
+    { name: "Air Panama", fileName: "AirPanama.png", imageSrc: airPanamaLogo },
+    { name: "SWISS", fileName: "SWISS_AIR.png", imageSrc: swissAirLogo },
+    { name: "Air Tahiti", fileName: "Air_Tahiti.png", imageSrc: airTahitiLogo },
+    { name: "Kenya Airways", fileName: "Kenya_Airways.png", imageSrc: kenyaAirwaysLogo },
+    { name: "Egyptair", fileName: "Egyptair.png", imageSrc: egyptairLogo },
+    { name: "Copa Airlines", fileName: "Copa_Airlines.png", imageSrc: copaAirlinesLogo },
+    { name: "Royal Jordanian", fileName: "Royal_Jordanian_Airlines.png", imageSrc: royalJordanianAirlinesLogo },
+    { name: "InterCaribbean", fileName: "InterCaribbean.png", imageSrc: interCaribbeanLogo },
   ];
 
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
