@@ -22,7 +22,6 @@ import finnairLogo from "@/assets/airline-logos/Finnair.png";
 import japanAirlinesLogo from "@/assets/airline-logos/Japan_Airlines.png";
 import ethiopianAirlinesLogo from "@/assets/airline-logos/Ethiopian_Airlines.png";
 import latamAirlinesLogo from "@/assets/airline-logos/LATAM_Airlines.png";
-import indigoLogo from "@/assets/airline-logos/Indigo.jpeg";
 import qatarAirwaysLogo from "@/assets/airline-logos/Qatar_Airways.jpeg";
 import evaAirLogo from "@/assets/airline-logos/EVA_Air.png";
 import malaysianAirlinesLogo from "@/assets/airline-logos/Malaysian_Airlines.png";
@@ -119,7 +118,6 @@ export const UploadGeneratedLogos = () => {
     { name: "SpiceJet", fileName: "SpiceJet.png", imageSrc: spiceJetLogo },
     { name: "Delta Airlines", fileName: "Delta_Airlines.png", imageSrc: deltaAirlinesLogo },
     { name: "Vietnam Airlines", fileName: "Vietnam_Airlines.png", imageSrc: vietnamAirlinesLogo },
-    { name: "Indigo", fileName: "Indigo.jpeg", imageSrc: indigoLogo },
     { name: "Air France", fileName: "Air_France.png", imageSrc: airFranceLogo },
     { name: "Finnair", fileName: "Finnair.png", imageSrc: finnairLogo },
     { name: "LATAM Airlines", fileName: "LATAM_Airlines.png", imageSrc: latamAirlinesLogo },
