@@ -106,6 +106,10 @@ import cyprusAirwaysLogo from "@/assets/airline-logos/Cyprus_Airways.png";
 import atlanticAirwaysLogo from "@/assets/airline-logos/Atlantic_Airways.png";
 import airChinaLogo from "@/assets/airline-logos/Air_China.png";
 import garudaIndonesiaLogo from "@/assets/airline-logos/Garuda_Indonesia.png";
+import suparnaAirlinesLogo from "@/assets/airline-logos/Suparna Airlines.png";
+import lybianWingsLogo from "@/assets/airline-logos/Lybian Wings.png";
+import jubbaAirwaysLogo from "@/assets/airline-logos/Jubba Airways.png";
+import eritreanAirlinesLogo from "@/assets/airline-logos/Eritrean Airlines.png";
 
 export const UploadGeneratedLogos = () => {
   const [isUploading, setIsUploading] = useState(false);
@@ -158,6 +162,10 @@ export const UploadGeneratedLogos = () => {
     { name: "Atlantic Airways", fileName: "Atlantic_Airways.png", imageSrc: atlanticAirwaysLogo },
     { name: "Air China", fileName: "Air_China.png", imageSrc: airChinaLogo },
     { name: "Garuda Indonesia", fileName: "Garuda_Indonesia.png", imageSrc: garudaIndonesiaLogo },
+    { name: "Suparna Airlines", fileName: "Suparna Airlines.png", imageSrc: suparnaAirlinesLogo },
+    { name: "Lybian Wings", fileName: "Lybian Wings.png", imageSrc: lybianWingsLogo },
+    { name: "Jubba Airways", fileName: "Jubba Airways.png", imageSrc: jubbaAirwaysLogo },
+    { name: "Eritrean Airlines", fileName: "Eritrean Airlines.png", imageSrc: eritreanAirlinesLogo },
   ];
 
   // Validate: Check for duplicates and count
