@@ -17,7 +17,7 @@ const Index = () => {
   const [disclaimerOpen, setDisclaimerOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-background p-6 flex flex-col items-center justify-center relative">
+    <div className="min-h-screen bg-gradient-background p-6 flex flex-col items-center justify-start pt-12 relative">
       {/* Title */}
       <div className="text-center mb-12 animate-scale-up">
         <h1 className="text-6xl font-bold text-primary mb-4 drop-shadow-lg">
