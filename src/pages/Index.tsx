@@ -75,8 +75,8 @@ const Index = () => {
         </Card>
       </div>
 
-      {/* Disclaimer Link */}
-      <div className="mt-12">
+      {/* Footer and Disclaimer */}
+      <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
         <Dialog open={disclaimerOpen} onOpenChange={setDisclaimerOpen}>
           <DialogTrigger asChild>
             <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
@@ -98,12 +98,11 @@ const Index = () => {
             </DialogHeader>
           </DialogContent>
         </Dialog>
+        
+        <span className="text-sm text-muted-foreground">
+          Created by <a href="https://www.linkedin.com/in/pradeep-kumars/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Pradeep</a> | Assisted by ChatGPT
+        </span>
       </div>
-
-      {/* Footer */}
-      <footer className="mt-8 text-center text-sm text-muted-foreground">
-        Created by <a href="https://www.linkedin.com/in/pradeep-kumars/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Pradeep</a> | Assisted by ChatGPT
-      </footer>
     </div>
   );
 };
