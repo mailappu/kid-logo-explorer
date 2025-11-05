@@ -99,6 +99,11 @@ const Index = () => {
           </DialogContent>
         </Dialog>
       </div>
+
+      {/* Footer */}
+      <footer className="mt-8 text-center text-sm text-muted-foreground">
+        Created by <a href="https://www.linkedin.com/in/pradeep-kumars/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Pradeep</a> | Assisted by ChatGPT
+      </footer>
     </div>
   );
 };
