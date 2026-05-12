@@ -1,37 +1,27 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { GraduationCap, Trophy, Info } from "lucide-react";
+import { GraduationCap, Trophy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { AppFooter } from "@/components/AppFooter";
 
 const Index = () => {
   const navigate = useNavigate();
-  const [disclaimerOpen, setDisclaimerOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-background p-6 flex flex-col items-center justify-start pt-12 relative">
       {/* Title */}
-      <div className="text-center mb-12 animate-scale-up">
+      <header className="text-center mb-12 animate-scale-up">
         <h1 className="text-6xl font-bold text-primary mb-4 drop-shadow-lg">
           Find The Airline
         </h1>
         <p className="text-2xl text-foreground/80 font-medium">
           Learn airline logos the fun way! ✈️
         </p>
-      </div>
+      </header>
 
       {/* Mode Selection Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
-        {/* Learn Mode Card */}
-        <Card 
+        <Card
           className="p-8 cursor-pointer hover:scale-105 transition-transform shadow-2xl animate-pop"
           onClick={() => navigate("/learn")}
         >
@@ -44,6 +34,7 @@ const Index = () => {
               See airline logos and hear their names!
             </p>
             <Button
+              type="button"
               size="lg"
               className="w-full h-16 text-2xl font-bold bg-gradient-primary hover:opacity-90 shadow-lg"
             >
@@ -52,8 +43,7 @@ const Index = () => {
           </div>
         </Card>
 
-        {/* Quiz Mode Card */}
-        <Card 
+        <Card
           className="p-8 cursor-pointer hover:scale-105 transition-transform shadow-2xl animate-pop"
           onClick={() => navigate("/quiz")}
         >
@@ -66,6 +56,7 @@ const Index = () => {
               Test your knowledge and earn points!
             </p>
             <Button
+              type="button"
               size="lg"
               className="w-full h-16 text-2xl font-bold bg-gradient-secondary hover:opacity-90 shadow-lg"
             >
@@ -75,34 +66,7 @@ const Index = () => {
         </Card>
       </div>
 
-      {/* Footer and Disclaimer */}
-      <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
-        <Dialog open={disclaimerOpen} onOpenChange={setDisclaimerOpen}>
-          <DialogTrigger asChild>
-            <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
-              <Info className="w-4 h-4 mr-2" />
-              Disclaimer
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle className="text-2xl font-bold">Disclaimer</DialogTitle>
-              <DialogDescription className="text-base leading-relaxed pt-4">
-                All logos and images displayed on this app are the property of their respective owners. 
-                I am not affiliated with, endorsed by, or the owner of any of the logos shown. 
-                These images have been sourced from StickPNG.com and are used solely for educational 
-                and informational purposes. No copyright infringement is intended.
-                <br /><br />
-                For any feedback reach out to mailappu@gmail.com
-              </DialogDescription>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
-        
-        <span className="text-sm text-muted-foreground">
-          Created by <a href="https://www.linkedin.com/in/pradeep-kumars/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Pradeep</a> | Assisted by ChatGPT
-        </span>
-      </div>
+      <AppFooter className="mt-12" />
     </div>
   );
 };
