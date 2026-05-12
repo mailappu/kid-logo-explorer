@@ -4,11 +4,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 interface SRAlternative {
   transcript: string;
 }
-interface SRResult {
-  0: SRAlternative;
-}
+type SRResult = SRAlternative[];
 interface SREvent {
-  results: { 0: SRResult }[];
+  results: SRResult[];
 }
 interface SRErrorEvent {
   error: string;
