@@ -1,209 +1,140 @@
-import { useState, useEffect, useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Mic, MicOff, ChevronRight, Volume2, VolumeX } from "lucide-react";
+import { ArrowLeft, Mic, MicOff, Volume2, VolumeX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useLogoItems } from "@/hooks/useLogoItems";
+import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
+import {
+  isSpeechRecognitionSupported,
+  useSpeechRecognition,
+} from "@/hooks/useSpeechRecognition";
+import {
+  fuzzyMatchOption,
+  getLogoUrl,
+  getRandomItem,
+  pickQuizQuestion,
+  type QuizQuestion,
+} from "@/lib/logo";
 
-interface LogoItem {
-  id: string;
-  name: string;
-  logo_image_url: string;
-  category: string;
-  updated_at: string;
-}
+const CORRECT_VOICE = [
+  "Bingo, You got it right",
+  "Bingo, You are correct",
+  "You are right",
+  "You are correct",
+  "Well Done",
+  "Awesome",
+  "Perfect",
+];
+const CORRECT_TEXT = ["Perfect", "Correct", "Right"];
+const WRONG_VOICE = [
+  "Hmm Nope",
+  "Nope",
+  "it was wrong",
+  "Learn again",
+  "No No",
+  "Oh No",
+];
+const WRONG_TEXT = ["Wrong", "Nope", "No No"];
 
 const Quiz = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [logoItems, setLogoItems] = useState<LogoItem[]>([]);
-  const [currentQuestion, setCurrentQuestion] = useState<{
-    logo: LogoItem;
-    options: string[];
-  } | null>(null);
+  const { logoItems, isLoading } = useLogoItems({ category: "airline" });
+
+  const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion | null>(null);
+  const [recentlyUsed, setRecentlyUsed] = useState<string[]>([]);
   const [score, setScore] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [isListening, setIsListening] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [showResult, setShowResult] = useState(false);
-  const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
   const [feedbackText, setFeedbackText] = useState("");
-  const [recentlyUsedLogos, setRecentlyUsedLogos] = useState<string[]>([]);
-  const recognitionRef = useRef<any>(null);
-  const pendingVoiceResultRef = useRef<{ matchedOption: string | null; transcript: string } | null>(null);
-  const voiceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
 
-  const correctVoiceResponses = [
-    "Bingo, You got it right",
-    "Bingo, You are correct",
-    "You are right",
-    "You are correct",
-    "Well Done",
-    "Awesome",
-    "Perfect"
-  ];
+  const { speak } = useSpeechSynthesis(isVoiceEnabled);
 
-  const correctTextResponses = ["Perfect", "Correct", "Right"];
-
-  const wrongVoiceResponses = [
-    "Hmm Nope",
-    "Nope",
-    "it was wrong",
-    "Learn again",
-    "No No",
-    "Oh No"
-  ];
-
-  const wrongTextResponses = ["Wrong", "Nope", "No No"];
-
-  const getRandomItem = (array: string[]) => {
-    return array[Math.floor(Math.random() * array.length)];
-  };
-
-  useEffect(() => {
-    fetchLogoItems();
-  }, []);
-
-  useEffect(() => {
-    if (logoItems.length >= 4) {
-      generateQuestion();
-    }
-  }, [logoItems]);
-
-  // Preload all logo images once loaded for smooth transitions
-  useEffect(() => {
-    logoItems.forEach((item) => {
-      const img = new Image();
-      img.src = `${item.logo_image_url}?v=${encodeURIComponent(item.updated_at)}`;
+  const generateQuestion = useCallback(() => {
+    setRecentlyUsed((prev) => {
+      const result = pickQuizQuestion(logoItems, prev);
+      if (!result) return prev;
+      setCurrentQuestion(result.question);
+      setSelectedAnswer(null);
+      setShowResult(false);
+      return result.nextRecentlyUsed;
     });
   }, [logoItems]);
 
-  const fetchLogoItems = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("logo_items")
-        .select("*")
-        .eq("is_active", true)
-        .eq("category", "airline");
+  // First question once data is ready
+  useEffect(() => {
+    if (logoItems.length >= 4 && !currentQuestion) {
+      generateQuestion();
+    } else if (!isLoading && logoItems.length > 0 && logoItems.length < 4) {
+      toast({
+        title: "Not enough logos",
+        description: "Need at least 4 logos for quiz mode.",
+        variant: "destructive",
+      });
+    }
+  }, [logoItems, currentQuestion, generateQuestion, isLoading, toast]);
 
-      if (error) throw error;
+  const handleAnswerSelect = useCallback(
+    (answer: string) => {
+      if (selectedAnswer || !currentQuestion) return;
 
-      if (data && data.length >= 4) {
-        setLogoItems(data);
+      setSelectedAnswer(answer);
+      setQuestionsAnswered((p) => p + 1);
+      setShowResult(true);
+
+      if (answer === currentQuestion.logo.name) {
+        setScore((p) => p + 1);
+        setFeedbackText(getRandomItem(CORRECT_TEXT));
+        speak(getRandomItem(CORRECT_VOICE));
       } else {
+        setFeedbackText(getRandomItem(WRONG_TEXT));
+        speak(`${getRandomItem(WRONG_VOICE)}. The correct answer is ${currentQuestion.logo.name}`);
+      }
+    },
+    [selectedAnswer, currentQuestion, speak],
+  );
+
+  const { start: startListening, isListening } = useSpeechRecognition({
+    onResult: ({ transcript }) => {
+      const matched = currentQuestion
+        ? fuzzyMatchOption(transcript, currentQuestion.options)
+        : null;
+
+      if (matched) {
+        handleAnswerSelect(matched);
+      } else {
+        const msg = `I heard "${transcript}". Sorry, I didn't get it. Can you please repeat again?`;
+        speak(msg);
         toast({
-          title: "Not enough logos",
-          description: "Need at least 4 logos for quiz mode.",
+          title: "Didn't catch that",
+          description: msg,
           variant: "destructive",
         });
       }
-    } catch (error) {
-      console.error("Error fetching logos:", error);
+    },
+    onError: (error) => {
       toast({
-        title: "Error loading logos",
-        description: "Could not load airline logos. Please try again.",
+        title: "Voice error",
+        description: `Voice recognition error: ${error}. Please try again.`,
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    onTimeout: () => {
+      toast({
+        title: "Timeout",
+        description: "Voice recognition timed out. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
-  const generateQuestion = () => {
-    if (logoItems.length < 4) return;
-
-    // Filter out recently used logos to improve variety
-    const availableLogos = logoItems.filter(
-      (item) => !recentlyUsedLogos.includes(item.id)
-    );
-
-    // If we've used too many, reset but keep the last 3
-    const logosToChooseFrom = availableLogos.length >= 4 
-      ? availableLogos 
-      : logoItems.filter((item) => !recentlyUsedLogos.slice(-3).includes(item.id));
-
-    // Pick random logo as correct answer
-    const correctLogo = logosToChooseFrom[
-      Math.floor(Math.random() * logosToChooseFrom.length)
-    ];
-
-    // Track this logo as recently used (keep last 5)
-    setRecentlyUsedLogos((prev) => [...prev.slice(-4), correctLogo.id]);
-
-    // Pick 3 other random logos as incorrect options
-    const incorrectOptions = logoItems
-      .filter((item) => item.id !== correctLogo.id)
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 3)
-      .map((item) => item.name);
-
-    // Combine and shuffle all options
-    const allOptions = [correctLogo.name, ...incorrectOptions].sort(
-      () => Math.random() - 0.5
-    );
-
-    setCurrentQuestion({
-      logo: correctLogo,
-      options: allOptions,
-    });
-    setSelectedAnswer(null);
-    setShowResult(false);
-  };
-
-  const speakFeedback = (text: string) => {
-    if (!isVoiceEnabled) return;
-    
-    if ("speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.9;
-      utterance.pitch = 1.1;
-      utterance.volume = 1.0;
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
-    }
-  };
-
-  const handleAnswerSelect = (answer: string) => {
-    if (selectedAnswer) return; // Already answered
-
-    setSelectedAnswer(answer);
-    setQuestionsAnswered((prev) => prev + 1);
-    setShowResult(true);
-
-    if (answer === currentQuestion?.logo.name) {
-      setScore((prev) => prev + 1);
-      const textFeedback = getRandomItem(correctTextResponses);
-      const voiceFeedback = getRandomItem(correctVoiceResponses);
-      setFeedbackText(textFeedback);
-      speakFeedback(voiceFeedback);
-    } else {
-      const textFeedback = getRandomItem(wrongTextResponses);
-      const voiceFeedback = getRandomItem(wrongVoiceResponses);
-      setFeedbackText(textFeedback);
-      speakFeedback(`${voiceFeedback}. The correct answer is ${currentQuestion?.logo.name}`);
-    }
-  };
-
-  const stopVoiceRecognition = () => {
-    if (recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-      } catch (e) {
-        console.warn('Error stopping recognition:', e);
-      }
-      recognitionRef.current = null;
-    }
-    if (voiceTimeoutRef.current) {
-      clearTimeout(voiceTimeoutRef.current);
-      voiceTimeoutRef.current = null;
-    }
-    setIsListening(false);
-  };
-
-  const startVoiceRecognition = () => {
-    if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
+  const handleStartListening = useCallback(() => {
+    if (!isSpeechRecognitionSupported()) {
       toast({
         title: "Not supported",
         description: "Voice recognition is not supported in this browser.",
@@ -211,151 +142,26 @@ const Quiz = () => {
       });
       return;
     }
+    startListening();
+  }, [startListening, toast]);
 
-    // Clean up any existing recognition
-    stopVoiceRecognition();
-
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognitionRef.current = recognition;
-
-    recognition.lang = "en-US";
-    recognition.continuous = false;
-    recognition.interimResults = false;
-
-    // Set a timeout to prevent getting stuck
-    voiceTimeoutRef.current = setTimeout(() => {
-      console.log('Voice recognition timeout - stopping');
-      stopVoiceRecognition();
-      toast({
-        title: "Timeout",
-        description: "Voice recognition timed out. Please try again.",
-        variant: "destructive",
-      });
-    }, 8000); // 8 second timeout
-
-    recognition.onstart = () => {
-      console.log('Voice recognition started');
-      setIsListening(true);
-    };
-
-    recognition.onresult = (event: any) => {
-      console.log('Voice recognition got result');
-      if (voiceTimeoutRef.current) {
-        clearTimeout(voiceTimeoutRef.current);
-        voiceTimeoutRef.current = null;
-      }
-
-      const transcript = event.results[0][0].transcript.toLowerCase().trim();
-      console.log("Voice input transcript:", transcript);
-      
-      // Find matching option with more lenient matching
-      const matchedOption = currentQuestion?.options.find((option) => {
-        const optionLower = option.toLowerCase();
-        const optionWords = optionLower.split(' ').filter(word => word.length > 2);
-        const transcriptWords = transcript.split(' ').filter(word => word.length > 2);
-        
-        // Check if transcript contains the full option name
-        if (transcript.includes(optionLower)) return true;
-        
-        // Check if option name is contained in transcript
-        if (optionLower.includes(transcript)) return true;
-        
-        // Check if any significant word from option is in transcript
-        const hasMatchingWord = optionWords.some(word => transcript.includes(word));
-        if (hasMatchingWord) return true;
-        
-        // Check if any significant word from transcript is in option
-        const hasReverseMatch = transcriptWords.some(word => optionLower.includes(word));
-        if (hasReverseMatch) return true;
-        
-        return false;
-      });
-
-      console.log("Matched option:", matchedOption);
-      
-      // Defer handling until after recognition fully ends to avoid TTS suppression
-      pendingVoiceResultRef.current = { matchedOption: matchedOption || null, transcript };
-      try {
-        recognition.stop();
-      } catch (e) {
-        console.warn('Recognition stop error:', e);
-      }
-    };
-
-    recognition.onerror = (event: any) => {
-      console.error('Voice recognition error:', event.error);
-      if (voiceTimeoutRef.current) {
-        clearTimeout(voiceTimeoutRef.current);
-        voiceTimeoutRef.current = null;
-      }
-      setIsListening(false);
-      recognitionRef.current = null;
-      
-      if (event.error !== 'aborted' && event.error !== 'no-speech') {
-        toast({
-          title: "Voice error",
-          description: `Voice recognition error: ${event.error}. Please try again.`,
-          variant: "destructive",
-        });
-      }
-    };
-
-    recognition.onend = () => {
-      console.log('Voice recognition ended');
-      if (voiceTimeoutRef.current) {
-        clearTimeout(voiceTimeoutRef.current);
-        voiceTimeoutRef.current = null;
-      }
-      setIsListening(false);
-      recognitionRef.current = null;
-
-      const pending = pendingVoiceResultRef.current;
-      pendingVoiceResultRef.current = null;
-      if (!pending) return;
-
-      // Speak or evaluate only after recognition fully stops
-      setTimeout(() => {
-        if (pending.matchedOption) {
-          handleAnswerSelect(pending.matchedOption);
-        } else {
-          const errorMessage = `I heard "${pending.transcript}". Sorry, I didn't get it. Can you please repeat again?`;
-          speakFeedback(errorMessage);
-          toast({
-            title: "Didn't catch that",
-            description: errorMessage,
-            variant: "destructive",
-          });
-        }
-      }, 150);
-    };
-
-    try {
-      recognition.start();
-    } catch (e) {
-      console.error('Error starting recognition:', e);
-      stopVoiceRecognition();
-      toast({
-        title: "Error",
-        description: "Could not start voice recognition. Please try again.",
-        variant: "destructive",
-      });
+  const getAnswerClasses = (option: string) => {
+    if (!selectedAnswer || !currentQuestion) {
+      return "bg-gradient-primary hover:opacity-90";
     }
-  };
-
-  const getButtonVariant = (option: string) => {
-    if (!selectedAnswer) return "default";
-    if (option === currentQuestion?.logo.name) return "success";
-    if (option === selectedAnswer) return "destructive";
-    return "default";
+    if (option === currentQuestion.logo.name) {
+      return "bg-gradient-success hover:opacity-90";
+    }
+    if (option === selectedAnswer) {
+      return "bg-destructive hover:opacity-90";
+    }
+    return "bg-gradient-primary hover:opacity-90";
   };
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-background flex items-center justify-center">
-        <div className="text-3xl font-bold text-primary animate-bounce-slow">
-          Loading...
-        </div>
+        <div className="text-3xl font-bold text-primary animate-bounce-slow">Loading...</div>
       </div>
     );
   }
@@ -365,7 +171,7 @@ const Quiz = () => {
       <div className="min-h-screen bg-gradient-background flex items-center justify-center p-6">
         <Card className="p-8 text-center">
           <h2 className="text-2xl font-bold mb-4">Not enough logos</h2>
-          <Button onClick={() => navigate("/")} className="bg-gradient-primary">
+          <Button type="button" onClick={() => navigate("/")} className="bg-gradient-primary">
             Go Home
           </Button>
         </Card>
@@ -378,6 +184,7 @@ const Quiz = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6 md:mb-8 gap-2">
         <Button
+          type="button"
           onClick={() => navigate("/")}
           size="lg"
           className="bg-white text-primary hover:bg-white/90 shadow-lg h-12 md:h-auto px-3 md:px-4"
@@ -387,10 +194,12 @@ const Quiz = () => {
         </Button>
         <div className="flex items-center gap-2 md:gap-4">
           <Button
-            onClick={() => setIsVoiceEnabled(!isVoiceEnabled)}
+            type="button"
+            onClick={() => setIsVoiceEnabled((v) => !v)}
             size="lg"
             className="bg-white text-primary hover:bg-white/90 shadow-lg h-12 md:h-auto px-3 md:px-4"
-            title={isVoiceEnabled ? "Mute voice feedback" : "Enable voice feedback"}
+            aria-label={isVoiceEnabled ? "Mute voice feedback" : "Enable voice feedback"}
+            aria-pressed={isVoiceEnabled}
           >
             {isVoiceEnabled ? (
               <Volume2 className="w-5 h-5 md:w-6 md:h-6" />
@@ -398,7 +207,10 @@ const Quiz = () => {
               <VolumeX className="w-5 h-5 md:w-6 md:h-6" />
             )}
           </Button>
-          <div className="text-xl md:text-3xl font-bold text-primary bg-white px-4 md:px-6 py-2 md:py-3 rounded-full shadow-lg whitespace-nowrap">
+          <div
+            className="text-xl md:text-3xl font-bold text-primary bg-white px-4 md:px-6 py-2 md:py-3 rounded-full shadow-lg whitespace-nowrap"
+            aria-live="polite"
+          >
             Score: {score}/{questionsAnswered}
           </div>
         </div>
@@ -407,36 +219,37 @@ const Quiz = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center max-w-2xl mx-auto w-full">
         <Card className="w-full p-4 md:p-8 shadow-2xl animate-scale-up">
-          {/* Logo Display */}
+          {/* Logo */}
           <div className="bg-white rounded-3xl p-6 md:p-12 mb-6 md:mb-8 shadow-inner flex items-center justify-center min-h-[200px] md:min-h-[300px]">
             <img
               key={currentQuestion.logo.id}
-              src={`${currentQuestion.logo.logo_image_url}?v=${encodeURIComponent(currentQuestion.logo.updated_at)}`}
-              alt={`${currentQuestion.logo.name} logo`}
+              src={getLogoUrl(currentQuestion.logo)}
+              alt={currentQuestion.logo.name}
               className="max-w-full max-h-48 md:max-h-64 object-contain"
               loading="eager"
               decoding="sync"
               fetchPriority="high"
               onError={(e) => {
-                console.error("Image failed to load:", `${currentQuestion.logo.logo_image_url}?v=${encodeURIComponent(currentQuestion.logo.updated_at)}`);
+                console.error("Image failed to load:", getLogoUrl(currentQuestion.logo));
                 e.currentTarget.src = "/placeholder.svg";
               }}
             />
           </div>
 
-          {/* Question Text */}
-          <div className="text-2xl md:text-3xl font-bold text-center mb-4 md:mb-6 text-primary">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-4 md:mb-6 text-primary">
             Which airline is this?
-          </div>
+          </h2>
 
-          {/* Result Display - Moved here below question */}
           {showResult && (
-            <div className="text-center mb-6 md:mb-8 animate-scale-up">
-              <div className={`text-3xl md:text-4xl font-bold mb-2 md:mb-3 ${
-                selectedAnswer === currentQuestion.logo.name 
-                  ? "text-success" 
-                  : "text-destructive"
-              }`}>
+            <div className="text-center mb-6 md:mb-8 animate-scale-up" aria-live="polite">
+              <div
+                className={cn(
+                  "text-3xl md:text-4xl font-bold mb-2 md:mb-3",
+                  selectedAnswer === currentQuestion.logo.name
+                    ? "text-success"
+                    : "text-destructive",
+                )}
+              >
                 {feedbackText}
               </div>
               {selectedAnswer !== currentQuestion.logo.name && (
@@ -447,16 +260,17 @@ const Quiz = () => {
             </div>
           )}
 
-          {/* Voice Input Button */}
           <Button
-            onClick={startVoiceRecognition}
+            type="button"
+            onClick={handleStartListening}
             disabled={!!selectedAnswer || isListening}
             size="lg"
-            className={`w-full h-14 md:h-16 text-lg md:text-xl font-bold mb-4 md:mb-6 ${
+            className={cn(
+              "w-full h-14 md:h-16 text-lg md:text-xl font-bold mb-4 md:mb-6",
               isListening
                 ? "bg-destructive animate-pulse"
-                : "bg-gradient-secondary hover:opacity-90"
-            }`}
+                : "bg-gradient-secondary hover:opacity-90",
+            )}
           >
             {isListening ? (
               <>
@@ -471,21 +285,18 @@ const Quiz = () => {
             )}
           </Button>
 
-          {/* Answer Options */}
           <div className="space-y-3 md:space-y-4">
-            {currentQuestion.options.map((option, index) => (
+            {currentQuestion.options.map((option) => (
               <Button
-                key={index}
+                key={option}
+                type="button"
                 onClick={() => handleAnswerSelect(option)}
                 disabled={!!selectedAnswer}
                 size="lg"
-                className={`w-full h-16 md:h-20 text-lg md:text-2xl font-bold shadow-lg ${
-                  getButtonVariant(option) === "success"
-                    ? "bg-gradient-success hover:opacity-90"
-                    : getButtonVariant(option) === "destructive"
-                    ? "bg-destructive hover:opacity-90"
-                    : "bg-gradient-primary hover:opacity-90"
-                }`}
+                className={cn(
+                  "w-full h-16 md:h-20 text-lg md:text-2xl font-bold shadow-lg",
+                  getAnswerClasses(option),
+                )}
               >
                 {option}
               </Button>
@@ -493,9 +304,9 @@ const Quiz = () => {
           </div>
         </Card>
 
-        {/* Next Button - Shows after answering */}
         {showResult && (
           <Button
+            type="button"
             onClick={generateQuestion}
             size="lg"
             className="mt-6 md:mt-8 h-16 md:h-20 px-10 md:px-12 text-xl md:text-2xl font-bold bg-gradient-success hover:opacity-90 shadow-lg animate-pop"

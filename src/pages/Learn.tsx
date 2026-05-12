@@ -1,119 +1,80 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Volume2, ChevronRight } from "lucide-react";
+import { ArrowLeft, Volume2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-
-interface LogoItem {
-  id: string;
-  name: string;
-  logo_image_url: string;
-  category: string;
-  updated_at: string;
-}
+import { useLogoItems } from "@/hooks/useLogoItems";
+import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
+import { getLogoUrl, shuffle } from "@/lib/logo";
 
 const Learn = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [logoItems, setLogoItems] = useState<LogoItem[]>([]);
+  const { logoItems, isLoading } = useLogoItems({ category: "airline" });
+  const { speak } = useSpeechSynthesis(true);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRevealed, setIsRevealed] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+
+  // Shuffle once when items arrive
+  const shuffledLogos = useMemo(() => shuffle(logoItems), [logoItems]);
 
   useEffect(() => {
-    fetchLogoItems();
-  }, []);
-
-  const fetchLogoItems = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("logo_items")
-        .select("*")
-        .eq("is_active", true)
-        .eq("category", "airline");
-
-      if (error) throw error;
-
-      if (data && data.length > 0) {
-        // Shuffle the items for random order
-        const shuffled = [...data].sort(() => Math.random() - 0.5);
-        setLogoItems(shuffled);
-      } else {
-        toast({
-          title: "No logos found",
-          description: "Please add some airline logos to the database.",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching logos:", error);
+    if (!isLoading && logoItems.length === 0) {
       toast({
-        title: "Error loading logos",
-        description: "Could not load airline logos. Please try again.",
+        title: "No logos found",
+        description: "Please add some airline logos to the database.",
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
     }
-  };
+  }, [isLoading, logoItems.length, toast]);
 
-  const speakName = (name: string) => {
-    if ("speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance(name);
-      utterance.rate = 0.8;
-      utterance.pitch = 1.2;
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
-    }
-  };
+  const currentLogo = shuffledLogos[currentIndex];
 
-  const handleReveal = () => {
-    setIsRevealed(true);
-  };
-
-  const handleRevealWithVoice = () => {
-    setIsRevealed(true);
-    if (logoItems[currentIndex]) {
-      speakName(logoItems[currentIndex].name);
-    }
-  };
-
-  const handleNext = () => {
-    setIsRevealed(false);
-    setCurrentIndex((prev) => (prev + 1) % logoItems.length);
-  };
-
-  const handlePrevious = () => {
-    setIsRevealed(false);
-    setCurrentIndex((prev) => (prev - 1 + logoItems.length) % logoItems.length);
-  };
-
-  const currentLogo = logoItems[currentIndex];
-
-  // Preload next & previous images for instant transitions
+  // Preload neighbors for instant transitions
   useEffect(() => {
-    if (logoItems.length === 0) return;
-    const preloadIndexes = [
-      (currentIndex + 1) % logoItems.length,
-      (currentIndex + 2) % logoItems.length,
-      (currentIndex - 1 + logoItems.length) % logoItems.length,
+    if (shuffledLogos.length === 0) return;
+    const indexes = [
+      (currentIndex + 1) % shuffledLogos.length,
+      (currentIndex + 2) % shuffledLogos.length,
+      (currentIndex - 1 + shuffledLogos.length) % shuffledLogos.length,
     ];
-    preloadIndexes.forEach((i) => {
-      const item = logoItems[i];
+    indexes.forEach((i) => {
+      const item = shuffledLogos[i];
       if (!item) return;
       const img = new Image();
-      img.src = `${item.logo_image_url}?v=${encodeURIComponent(item.updated_at)}`;
+      img.src = getLogoUrl(item);
     });
-  }, [currentIndex, logoItems]);
+  }, [currentIndex, shuffledLogos]);
+
+  const speakName = useCallback(
+    (name: string) => speak(name, { rate: 0.8, pitch: 1.2 }),
+    [speak],
+  );
+
+  const handleReveal = useCallback(() => setIsRevealed(true), []);
+  const handleRevealWithVoice = useCallback(() => {
+    setIsRevealed(true);
+    if (currentLogo) speakName(currentLogo.name);
+  }, [currentLogo, speakName]);
+
+  const handleNext = useCallback(() => {
+    setIsRevealed(false);
+    setCurrentIndex((prev) => (prev + 1) % shuffledLogos.length);
+  }, [shuffledLogos.length]);
+
+  const handlePrevious = useCallback(() => {
+    setIsRevealed(false);
+    setCurrentIndex(
+      (prev) => (prev - 1 + shuffledLogos.length) % shuffledLogos.length,
+    );
+  }, [shuffledLogos.length]);
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-background flex items-center justify-center">
-        <div className="text-3xl font-bold text-primary animate-bounce-slow">
-          Loading...
-        </div>
+        <div className="text-3xl font-bold text-primary animate-bounce-slow">Loading...</div>
       </div>
     );
   }
@@ -123,7 +84,7 @@ const Learn = () => {
       <div className="min-h-screen bg-gradient-background flex items-center justify-center p-6">
         <Card className="p-8 text-center">
           <h2 className="text-2xl font-bold mb-4">No logos available</h2>
-          <Button onClick={() => navigate("/")} className="bg-gradient-primary">
+          <Button type="button" onClick={() => navigate("/")} className="bg-gradient-primary">
             Go Home
           </Button>
         </Card>
@@ -136,6 +97,7 @@ const Learn = () => {
       {/* Header */}
       <div className="flex items-center justify-start flex-shrink-0">
         <Button
+          type="button"
           onClick={() => navigate("/")}
           size="lg"
           className="bg-white text-primary hover:bg-white/90 shadow-lg"
@@ -151,23 +113,23 @@ const Learn = () => {
           <div className="bg-white rounded-3xl p-12 mb-8 shadow-inner flex items-center justify-center min-h-[300px]">
             <img
               key={currentLogo.id}
-              src={`${currentLogo.logo_image_url}?v=${encodeURIComponent(currentLogo.updated_at)}`}
-              alt={`${currentLogo.name} logo`}
+              src={getLogoUrl(currentLogo)}
+              alt={currentLogo.name}
               className="max-w-full max-h-64 object-contain"
               loading="eager"
               decoding="sync"
               fetchPriority="high"
               onError={(e) => {
-                console.error("Image failed to load:", `${currentLogo.logo_image_url}?v=${encodeURIComponent(currentLogo.updated_at)}`);
+                console.error("Image failed to load:", getLogoUrl(currentLogo));
                 e.currentTarget.src = "/placeholder.svg";
               }}
             />
           </div>
 
-          {/* Reveal Button or Name Display */}
           {!isRevealed ? (
             <div className="grid grid-cols-2 gap-4">
               <Button
+                type="button"
                 onClick={handleReveal}
                 size="lg"
                 className="h-20 md:h-24 text-lg md:text-2xl font-bold bg-gradient-primary hover:opacity-90 shadow-lg animate-pop"
@@ -175,6 +137,7 @@ const Learn = () => {
                 Reveal
               </Button>
               <Button
+                type="button"
                 onClick={handleRevealWithVoice}
                 size="lg"
                 className="h-20 md:h-24 text-lg md:text-2xl font-bold bg-gradient-secondary hover:opacity-90 shadow-lg animate-pop"
@@ -184,11 +147,10 @@ const Learn = () => {
               </Button>
             </div>
           ) : (
-            <div className="text-center mb-6 animate-scale-up">
-              <div className="text-5xl font-bold text-primary mb-4">
-                {currentLogo.name}
-              </div>
+            <div className="text-center mb-6 animate-scale-up" aria-live="polite">
+              <div className="text-5xl font-bold text-primary mb-4">{currentLogo.name}</div>
               <Button
+                type="button"
                 onClick={() => speakName(currentLogo.name)}
                 size="lg"
                 className="bg-gradient-primary hover:opacity-90 text-xl"
