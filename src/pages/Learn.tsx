@@ -92,6 +92,22 @@ const Learn = () => {
 
   const currentLogo = logoItems[currentIndex];
 
+  // Preload next & previous images for instant transitions
+  useEffect(() => {
+    if (logoItems.length === 0) return;
+    const preloadIndexes = [
+      (currentIndex + 1) % logoItems.length,
+      (currentIndex + 2) % logoItems.length,
+      (currentIndex - 1 + logoItems.length) % logoItems.length,
+    ];
+    preloadIndexes.forEach((i) => {
+      const item = logoItems[i];
+      if (!item) return;
+      const img = new Image();
+      img.src = `${item.logo_image_url}?v=${encodeURIComponent(item.updated_at)}`;
+    });
+  }, [currentIndex, logoItems]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-background flex items-center justify-center">
