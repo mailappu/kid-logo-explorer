@@ -92,6 +92,22 @@ const Learn = () => {
 
   const currentLogo = logoItems[currentIndex];
 
+  // Preload next & previous images for instant transitions
+  useEffect(() => {
+    if (logoItems.length === 0) return;
+    const preloadIndexes = [
+      (currentIndex + 1) % logoItems.length,
+      (currentIndex + 2) % logoItems.length,
+      (currentIndex - 1 + logoItems.length) % logoItems.length,
+    ];
+    preloadIndexes.forEach((i) => {
+      const item = logoItems[i];
+      if (!item) return;
+      const img = new Image();
+      img.src = `${item.logo_image_url}?v=${encodeURIComponent(item.updated_at)}`;
+    });
+  }, [currentIndex, logoItems]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-background flex items-center justify-center">
@@ -134,11 +150,13 @@ const Learn = () => {
         <Card className="w-full p-8 shadow-2xl animate-scale-up">
           <div className="bg-white rounded-3xl p-12 mb-8 shadow-inner flex items-center justify-center min-h-[300px]">
             <img
+              key={currentLogo.id}
               src={`${currentLogo.logo_image_url}?v=${encodeURIComponent(currentLogo.updated_at)}`}
               alt={`${currentLogo.name} logo`}
               className="max-w-full max-h-64 object-contain"
-              loading="lazy"
-              decoding="async"
+              loading="eager"
+              decoding="sync"
+              fetchPriority="high"
               onError={(e) => {
                 console.error("Image failed to load:", `${currentLogo.logo_image_url}?v=${encodeURIComponent(currentLogo.updated_at)}`);
                 e.currentTarget.src = "/placeholder.svg";
