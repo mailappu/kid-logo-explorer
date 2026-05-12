@@ -33,7 +33,7 @@ const Quiz = () => {
   const [recentlyUsedLogos, setRecentlyUsedLogos] = useState<string[]>([]);
   const recognitionRef = useRef<any>(null);
   const pendingVoiceResultRef = useRef<{ matchedOption: string | null; transcript: string } | null>(null);
-  const voiceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const voiceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const correctVoiceResponses = [
     "Bingo, You got it right",
