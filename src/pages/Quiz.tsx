@@ -72,6 +72,14 @@ const Quiz = () => {
     }
   }, [logoItems]);
 
+  // Preload all logo images once loaded for smooth transitions
+  useEffect(() => {
+    logoItems.forEach((item) => {
+      const img = new Image();
+      img.src = `${item.logo_image_url}?v=${encodeURIComponent(item.updated_at)}`;
+    });
+  }, [logoItems]);
+
   const fetchLogoItems = async () => {
     try {
       const { data, error } = await supabase
@@ -402,10 +410,13 @@ const Quiz = () => {
           {/* Logo Display */}
           <div className="bg-white rounded-3xl p-6 md:p-12 mb-6 md:mb-8 shadow-inner flex items-center justify-center min-h-[200px] md:min-h-[300px]">
             <img
+              key={currentQuestion.logo.id}
               src={`${currentQuestion.logo.logo_image_url}?v=${encodeURIComponent(currentQuestion.logo.updated_at)}`}
               alt={`${currentQuestion.logo.name} logo`}
               className="max-w-full max-h-48 md:max-h-64 object-contain"
-              loading="lazy"
+              loading="eager"
+              decoding="sync"
+              fetchPriority="high"
               onError={(e) => {
                 console.error("Image failed to load:", `${currentQuestion.logo.logo_image_url}?v=${encodeURIComponent(currentQuestion.logo.updated_at)}`);
                 e.currentTarget.src = "/placeholder.svg";
